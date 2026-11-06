@@ -1,0 +1,12 @@
+{
+  "name": "yourcarguy806-site",
+  "private": true,
+  "description": "Reliable Automotive Services website (www.yourcarguy806.com)",
+  "scripts": {
+    "build": "python3 build.py",
+    "test": "python3 tests/static_checks.py && html-validate $(find dist -name '*.html') && python3 -m unittest tests/test_cloudflare_setup.py && node --test tests/middleware.test.mjs && python3 tests/browser_checks.py"
+  },
+  "devDependencies": {
+    "html-validate": "9.5.0"
+  }
+}
