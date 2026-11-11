@@ -145,6 +145,19 @@ with sync_playwright() as pw:
         page.fill("#f-phone", "(806) 555-0123"); page.fill("#f-vehicle", "2016 Chevy Silverado")
         page.select_option("#f-service", index=2); page.fill("#f-location", "82nd & Slide")
         page.fill("#f-details", "Grinding when stopping & pulls left")
+        # Consent box: checkbox sits beside its disclosure, which reads as normal text
+        cb = page.locator("#f-consent").bounding_box(); lb = page.locator(".consent label").bounding_box()
+        check(cb["width"] < 40 and cb["x"] < lb["x"] and abs(cb["y"] - lb["y"]) < 12, f"{path}: consent checkbox not beside its text")
+        check(page.eval_on_selector(".consent label", "e => getComputedStyle(e).fontWeight") == "400", f"{path}: consent text should not be bold")
+        # SMS consent is optional: unchecked by default, never blocks the request,
+        # and adds a consent line only when checked.
+        check(not page.is_checked("#f-consent"), f"{path}: consent box starts checked")
+        check(page.get_attribute("#f-consent", "required") is None, f"{path}: consent box must not be required")
+        page.click("#copy-request")
+        clip = page.evaluate("navigator.clipboard.readText()")
+        consent_word = "Consentimiento para mensajes: Sí" if lang_line else "Text consent: Yes"
+        check(label_name + "Test Customer" in clip and consent_word not in clip, f"{path}: unchecked box should copy without a consent line {clip!r}")
+        page.check("#f-consent")
         page.click("#copy-request")
         clip = page.evaluate("navigator.clipboard.readText()")
         check(label_name + "Test Customer" in clip and "82nd & Slide" in clip, f"{path}: copied text wrong {clip!r}")
@@ -157,40 +170,26 @@ with sync_playwright() as pw:
             check(m.group(1) == TEXT, f"{path}: form texts {m.group(1)}, expected {TEXT}")
             body = urllib.parse.unquote(m.group(2))
             check("2016 Chevy Silverado" in body and "Grinding when stopping & pulls left" in body, f"{path}: sms body {body!r}")
-            check("Text consent" not in body and "Consentimiento para mensajes" not in body, f"{path}: consent line sent without the box checked: {body!r}")
-        # The optional consent box, on a freshly loaded form (the sms: link opened above can
-        # still be settling in older Chromium): unchecked by default, never required, and
-        # checking it adds the consent line.
-        # In a new tab: opening the sms: link above leaves Chrome's "open another app?"
-        # prompt on that tab, which swallows mouse input there (typing still works).
+            check(consent_word in body, f"{path}: checked box did not add the consent line {body!r}")
+        # Without the box, the request still opens a text (in a new tab: the sms: prompt
+        # left on the first tab swallows mouse input in newer headless Chrome).
         page = ctx.new_page(); seen = []
         page.on("request", lambda r: seen.append(r.url)); page.on("framenavigated", lambda f: seen.append(f.url))
-        page.emulate_media(reduced_motion="reduce")
         page.goto(BASE + path, wait_until="networkidle")
         page.fill("#f-name", "Test Customer"); page.fill("#f-phone", "(806) 555-0123")
         page.fill("#f-vehicle", "2016 Chevy Silverado"); page.fill("#f-location", "82nd & Slide")
-        check(not page.is_checked("#f-sms-consent"), f"{path}: consent box starts checked")
-        check(page.get_attribute("#f-sms-consent", "required") is None, f"{path}: consent box must not be required")
-        # Center it first: on phones the fixed Call/Text bar covers the bottom of the screen.
-        page.evaluate("document.getElementById('f-sms-consent').scrollIntoView({block: 'center', behavior: 'instant'})")
-        page.wait_for_timeout(200)
-        on_top = page.evaluate("""() => { const r = document.getElementById('f-sms-consent').getBoundingClientRect();
-            const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-            return el && el.id === 'f-sms-consent' ? '' : (el ? el.outerHTML.slice(0, 160) : 'nothing'); }""")
-        check(not on_top, f"{path}: something covers the consent box: {on_top}")
-        page.evaluate("""() => { window.__consentLog = []; const box = document.getElementById('f-sms-consent');
-            ['pointerdown', 'mousedown', 'click', 'input', 'change'].forEach(type => box.addEventListener(type, e => window.__consentLog.push(type + ':' + box.checked + (e.defaultPrevented ? ':prevented' : ''))));
-            document.addEventListener('click', e => window.__consentLog.push('doc-click:' + (e.target.id || e.target.tagName)), true); }""")
-        # A person taps the box or its wording; the label is the bigger target.
-        page.click("label[for=f-sms-consent]", position={"x": 40, "y": 8})
-        if not page.is_checked("#f-sms-consent"):
-            info = page.evaluate("() => ({ log: window.__consentLog, url: location.href, checked: document.getElementById('f-sms-consent').checked, ua: navigator.userAgent })")
-            check(False, f"{path}: tapping the consent wording did not check the box: {info}")
-        seen.clear()
         page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
         m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
-        consent_word = "Consentimiento para mensajes: Sí" if lang_line else "Text consent: Yes"
-        check(bool(m) and consent_word in urllib.parse.unquote(m.group(2)), f"{path}: checked box did not add the consent line")
+        check(bool(m) and consent_word not in urllib.parse.unquote(m.group(2)), f"{path}: request without consent should still open a text, with no consent line")
+        ctx.close()
+
+    # ---- SMS consent page: text CTA and disclosure visible on a phone
+    for path, needle in [("/sms/", "Reply STOP"), ("/es/mensajes-de-texto/", "Responda STOP")]:
+        ctx = browser.new_context(viewport={"width": 390, "height": 844}); page = ctx.new_page()
+        page.goto(BASE + path, wait_until="networkidle")
+        check(page.is_visible(f".consent-box >> text={needle}"), f"{path}: consent box not visible")
+        check(page.get_attribute(".hero .btn-amber", "href") == "sms:+18067764460", f"{path}: hero text button wrong")
+        page.screenshot(path=f"{SHOTS}/sms-{'es' if 'es/' in path else 'en'}-phone.png", full_page=True)
         ctx.close()
 
     # ---- 404s

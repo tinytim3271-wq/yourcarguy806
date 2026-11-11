@@ -123,37 +123,50 @@ for home in ("/", "/es/"):
 for c in ("/contact/", "/es/contacto/"):
     if pages[c].form_sms != TEXT: fails.append(f"{c}: form texts {pages[c].form_sms}, expected {TEXT}")
 
-# Scripts and styles carry a content version, so new pages never run with a cached old script.
-for c in ("/contact/", "/es/contacto/", "/"):
-    page_html = open(os.path.join(DIST, c.strip("/"), "index.html"), encoding="utf-8").read()
-    for asset_path in ("/js/site.js", "/js/lang.js", "/css/site.css"):
-        if not re.search(re.escape(asset_path) + r"\?v=[0-9a-f]{10}\"", page_html): fails.append(f"{c}: {asset_path} is not versioned")
+# ---- SMS registration (A2P / toll-free) evidence
+def text_of(url):
+    import re as _re
+    return _re.sub(r"\s+", " ", _re.sub(r"<[^>]+>", " ", raw[url]))
+for sms_url, contact_url, privacy_url, terms_url, words in [
+        ("/sms/", "/contact/", "/privacy/", "/terms/",
+         ["Message frequency varies", "data rates may apply", "Reply STOP", "HELP", "not a condition of purchase", "(806) 776-4460"]),
+        ("/es/mensajes-de-texto/", "/es/contacto/", "/es/privacidad/", "/es/terminos/",
+         ["frecuencia de los mensajes varía", "cargos por mensajes y datos", "STOP", "HELP", "no es condición de compra", "(806) 776-4460"])]:
+    for url in (sms_url, contact_url):
+        t = text_of(url)
+        for w in words:
+            if w not in t: fails.append(f"{url}: SMS disclosure missing {w!r}")
+    # The SMS consent box is optional: present, unchecked, never required.
+    box = re.search(r'<input id="f-consent"[^>]*>', raw[contact_url])
+    if not box: fails.append(f"{contact_url}: SMS consent checkbox missing")
+    elif 'type="checkbox"' not in box.group(0) or re.search(r"\b(checked|required)\b", box.group(0)):
+        fails.append(f"{contact_url}: SMS consent box must be an unchecked, optional checkbox: {box.group(0)}")
+    if not re.search(r'<label for="f-consent">(Optional|Opcional): ', raw[contact_url]):
+        fails.append(f"{contact_url}: consent wording must say it is optional")
+    if f'href="{sms_url}"' not in raw[privacy_url] or f'href="{sms_url}"' not in raw[terms_url]:
+        fails.append(f"{privacy_url}/{terms_url}: must link the SMS page")
+    tt = text_of(terms_url)
+    for w in ("STOP", "HELP", "(806) 776-4460"):
+        if w not in tt: fails.append(f"{terms_url}: SMS terms missing {w!r}")
+for url, phrase in [("/privacy/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
+                    ("/sms/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
+                    ("/es/privacidad/", "No se compartirá información móvil con terceros ni afiliados para fines de mercadotecnia o promoción.")]:
+    if phrase not in text_of(url): fails.append(f"{url}: carrier non-sharing clause missing")
+for url in pages:
+    if url.endswith("404.html"): continue
+    if 'class="sms-note"' not in raw[url]: fails.append(f"{url}: no SMS disclosure next to Text buttons")
+redirects = open(os.path.join(DIST, "_redirects")).read()
+for alias in ("/privacy-policy /privacy/ 200", "/terms-of-service /terms/ 200", "/sms-terms /sms/ 200"):
+    if alias not in redirects: fails.append(f"_redirects missing alias {alias}")
 
-# Optional SMS consent: present, unchecked, never required, with every disclosure carriers check.
-CONSENT_NEEDS = {
-    "/contact/": ["Optional:", "Reliable Automotive Services may text me", "Msg frequency varies", "Msg &amp; data rates may apply",
-                  "Reply STOP to opt out, HELP for help", "Consent is not a condition of service", 'href="/terms/"', 'href="/privacy/"'],
-    "/es/contacto/": ["Opcional:", "Reliable Automotive Services puede mandarme mensajes", "La frecuencia de los mensajes varía",
-                      "Pueden aplicar cargos por mensajes y datos", "Responda STOP para cancelar, HELP para ayuda",
-                      "no es condición para recibir el servicio", 'href="/es/terminos/"', 'href="/es/privacidad/"'],
-}
-for c, needs in CONSENT_NEEDS.items():
-    html_text = open(os.path.join(DIST, c.strip("/"), "index.html"), encoding="utf-8").read()
-    box = re.search(r'<input id="f-sms-consent"[^>]*>', html_text)
-    if not box: fails.append(f"{c}: SMS consent checkbox missing"); continue
-    tag = box.group(0)
-    if 'type="checkbox"' not in tag: fails.append(f"{c}: consent box is not a checkbox")
-    if re.search(r"\b(checked|required)\b", tag): fails.append(f"{c}: consent box must be unchecked and optional: {tag}")
-    label = re.search(r'<label for="f-sms-consent">(.*?)</label>', html_text, re.S)
-    for need in needs:
-        if not label or need not in label.group(1): fails.append(f"{c}: consent text missing {need!r}")
-for legal, needs in {"/terms/": ["Message frequency varies", "<strong>HELP</strong>", "<strong>STOP</strong>", "Carriers are not liable for delayed or undelivered messages", 'href="/privacy/"'],
-                     "/privacy/": ["We do not sell or share your SMS opt-in data or personal information with third parties for marketing purposes"],
-                     "/es/terminos/": ["La frecuencia de los mensajes varía", "<strong>HELP</strong>", "<strong>STOP</strong>", "no son responsables de mensajes retrasados", 'href="/es/privacidad/"'],
-                     "/es/privacidad/": ["No vendemos ni compartimos sus datos de consentimiento para mensajes de texto"]}.items():
-    text = open(os.path.join(DIST, legal.strip("/"), "index.html"), encoding="utf-8").read()
-    for need in needs:
-        if need not in text: fails.append(f"{legal}: SMS disclosure missing {need!r}")
+# ---- CSS/JS links carry a content hash so edge and browser caches never serve stale files
+import hashlib, re as _re2
+for asset in ("css/site.css", "js/site.js", "js/lang.js"):
+    want = hashlib.sha256(open(os.path.join(DIST, asset), "rb").read()).hexdigest()[:10]
+    for url in pages:
+        found = _re2.findall(r'/' + _re2.escape(asset) + r'(\?v=[0-9a-f]+)?"', raw[url])
+        if found and found != ["?v=" + want] * len(found):
+            fails.append(f"{url}: {asset} link not versioned with current hash ({found})")
 
 ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 locs = {l.text for l in ET.parse(os.path.join(DIST, "sitemap.xml")).getroot().findall("s:url/s:loc", ns)}

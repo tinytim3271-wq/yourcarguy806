@@ -79,5 +79,7 @@ jobs:
         run: npx --yes wrangler@4.20.0 pages deploy dist --project-name yourcarguy806 --branch main --commit-dirty=true
       - name: Attach www.yourcarguy806.com and yourcarguy806.com
         run: python3 scripts/cloudflare_setup.py attach-domains
+      - name: Keep Bot Fight Mode off (so reviewers' automated checks can read the site)
+        run: python3 scripts/cloudflare_setup.py bot-fight-off
       - name: Verify the live site
         run: python3 scripts/cloudflare_setup.py verify

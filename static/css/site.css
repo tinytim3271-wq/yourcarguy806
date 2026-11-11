@@ -182,10 +182,6 @@ a.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:va
 .form input:focus,.form select:focus,.form textarea:focus{border-color:var(--red);outline:none;box-shadow:0 0 0 3px rgba(200,32,47,.18)}
 .form .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form .hint{font-size:.92rem;color:var(--muted);margin:0}
-.form .consent{display:flex;gap:10px;align-items:flex-start}
-.form .consent input{flex:0 0 auto;margin:3px 0 0;padding:0;width:20px;height:20px;accent-color:var(--red)}
-.form .consent label{font-weight:400;font-size:.92rem;color:var(--muted);margin:0}
-.form .consent a{color:inherit;text-decoration:underline}
 .form .error{color:var(--red-dark);font-weight:700;margin:0;min-height:1.2em}
 .form .actions{display:flex;flex-wrap:wrap;gap:12px}
 
@@ -273,3 +269,17 @@ a[href^="tel:"]{white-space:nowrap}
   .brand-name{font-size:1rem}
   .brand-sub{font-size:.72rem;letter-spacing:.14em}
 }
+
+/* ---- v3: SMS consent */
+.sms-note{font-size:.85rem;line-height:1.45;color:#cfc6b4;margin:.7em 0 0}
+.sms-note a{color:#fff;font-weight:700}
+.hero-note{max-width:44em;margin-top:1.2em}
+.consent{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;background:var(--cream);border:2px solid var(--line);border-radius:var(--radius);padding:14px}
+.consent input{width:24px;height:24px;margin:2px 0 0;accent-color:var(--red)}
+.consent label{font-weight:400;font-size:.92rem;line-height:1.5;margin:0}
+.consent-box{background:#fff;border:3px solid var(--amber);border-radius:10px;padding:22px 24px;margin-bottom:28px}
+.consent-box h2{margin-top:0;font-size:1.6rem}
+.consent-box .btn{margin-top:4px}
+.cta-band .sms-note{color:#ffe9ea;max-width:46em}
+.cta-band .sms-note a{color:#fff}
+.nowrap{white-space:nowrap}

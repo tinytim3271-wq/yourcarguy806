@@ -4,6 +4,7 @@
   python3 scripts/cloudflare_setup.py ensure-project   # before deploy
   python3 scripts/cloudflare_setup.py attach-domains   # after deploy
   python3 scripts/cloudflare_setup.py verify           # check the live site
+  python3 scripts/cloudflare_setup.py bot-fight-off    # keep Bot Fight Mode off
 
 Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID. The token needs
 Account > Cloudflare Pages > Edit, Zone > DNS > Edit and Zone > Zone > Read
@@ -137,6 +138,36 @@ def attach_domains(cf, account):
     return {"added": added, "dns": dns, "status": status}
 
 
+BOT_PERMISSION_HINT = ("The API token can't change Bot Fight Mode. Edit the token in Cloudflare "
+                       "(My Profile > API Tokens) and add Zone > Bot Management > Edit for yourcarguy806.com, "
+                       "or turn it off by hand: yourcarguy806.com > Security > Bots > Bot Fight Mode.")
+
+
+def bot_fight_off(cf, account):
+    """Turn off Bot Fight Mode and its JavaScript detections so compliance reviewers and
+    other legitimate automated checks can always read the site. Returns a status dict."""
+    zone_id = find_zone(cf, account)
+    path = f"/zones/{zone_id}/bot_management"
+    try:
+        current = cf.request("GET", path).get("result") or {}
+    except CloudflareError as e:
+        if e.status in (401, 403):
+            return {"action": "no_permission", "hint": BOT_PERMISSION_HINT}
+        raise
+    if not current.get("fight_mode") and not current.get("enable_js"):
+        return {"action": "already_off"}
+    try:
+        cf.request("PUT", path, {"fight_mode": False, "enable_js": False})
+    except CloudflareError as e:
+        if e.status in (401, 403):
+            return {"action": "no_permission", "hint": BOT_PERMISSION_HINT, "was": current}
+        raise
+    after = cf.request("GET", path).get("result") or {}
+    if after.get("fight_mode") or after.get("enable_js"):
+        raise CloudflareError(f"Bot Fight Mode is still on after the update: {after}")
+    return {"action": "turned_off", "was": {k: current.get(k) for k in ("fight_mode", "enable_js")}}
+
+
 def verify(fetch=None, attempts=30, delay=20):
     fetch = fetch or (lambda url: urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "yourcarguy806-verify"}), timeout=20))
     last = ""
@@ -168,6 +199,12 @@ def main(argv=None):
     try:
         if cmd == "ensure-project":
             print(f"Pages project {PROJECT}: {ensure_project(cf, account)}")
+        elif cmd == "bot-fight-off":
+            r = bot_fight_off(cf, account)
+            if r["action"] == "no_permission":
+                print(f"::warning title=Bot Fight Mode not changed::{r['hint']}")
+            else:
+                print(f"Bot Fight Mode: {r['action']}" + (f" (was {r['was']})" if r.get("was") else ""))
         elif cmd == "attach-domains":
             r = attach_domains(cf, account)
             print(f"Custom domains added: {r['added'] or 'none (already attached)'}")
