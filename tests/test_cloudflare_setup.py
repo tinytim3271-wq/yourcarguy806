@@ -21,6 +21,8 @@ class FakeCF:
         self.dns = dns if dns is not None else []
         self.calls = []
         self.n = 0
+        self.bot = {"fight_mode": True, "enable_js": True}
+        self.bot_status = None
 
     def opener(self, req):
         method, url = req.get_method(), req.full_url
@@ -53,6 +55,12 @@ class FakeCF:
         if p == dpath and m == "POST":
             self.pages_domains.append({"name": b["name"], "status": "pending"})
             return 200, self.pages_domains[-1]
+        if p == "/zones/z1/bot_management":
+            if self.bot_status:
+                return self.bot_status, None
+            if m == "PUT":
+                self.bot.update(b)
+            return 200, dict(self.bot)
         if p == "/zones/z1/dns_records" and m == "GET":
             return 200, self.dns
         if p == "/zones/z1/dns_records" and m == "POST":
@@ -151,6 +159,21 @@ class SetupTests(unittest.TestCase):
         self.assertTrue(ok)
         ok, _ = cs.verify(fetch=fake_fetch("<title>ShopCrank | Dispatch</title>"), attempts=1, delay=0)
         self.assertFalse(ok)
+
+    def test_turns_bot_fight_mode_off_and_is_idempotent(self):
+        fake = FakeCF(project=True)
+        r = cs.bot_fight_off(self.client(fake), "acct")
+        self.assertEqual(r["action"], "turned_off")
+        self.assertEqual(fake.bot, {"fight_mode": False, "enable_js": False})
+        self.assertEqual(cs.bot_fight_off(self.client(fake), "acct")["action"], "already_off")
+        self.assertEqual(len([c for c in fake.calls if c[0] == "PUT"]), 1)
+
+    def test_bot_fight_mode_without_permission_warns_instead_of_failing(self):
+        fake = FakeCF(project=True)
+        fake.bot_status = 403
+        r = cs.bot_fight_off(self.client(fake), "acct")
+        self.assertEqual(r["action"], "no_permission")
+        self.assertIn("Bot Management > Edit", r["hint"])
 
     def test_missing_secrets_exit_with_a_clear_message(self):
         env = dict(os.environ)
