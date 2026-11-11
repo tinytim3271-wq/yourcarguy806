@@ -158,12 +158,19 @@ with sync_playwright() as pw:
             body = urllib.parse.unquote(m.group(2))
             check("2016 Chevy Silverado" in body and "Grinding when stopping & pulls left" in body, f"{path}: sms body {body!r}")
             check("Text consent" not in body and "Consentimiento para mensajes" not in body, f"{path}: consent line sent without the box checked: {body!r}")
-        # The optional consent box: unchecked by default, and checking it adds the consent line.
+        # The optional consent box, on a freshly loaded form (the sms: link opened above can
+        # still be settling in older Chromium): unchecked by default, never required, and
+        # checking it adds the consent line.
+        page.goto(BASE + path, wait_until="networkidle")
+        page.fill("#f-name", "Test Customer"); page.fill("#f-phone", "(806) 555-0123")
+        page.fill("#f-vehicle", "2016 Chevy Silverado"); page.fill("#f-location", "82nd & Slide")
         check(not page.is_checked("#f-sms-consent"), f"{path}: consent box starts checked")
         check(page.get_attribute("#f-sms-consent", "required") is None, f"{path}: consent box must not be required")
         # Center it first: on phones the fixed Call/Text bar covers the bottom of the screen.
         page.evaluate("document.getElementById('f-sms-consent').scrollIntoView({block: 'center'})")
-        page.check("#f-sms-consent"); seen.clear()
+        page.check("#f-sms-consent")
+        check(page.is_checked("#f-sms-consent"), f"{path}: consent box did not check")
+        seen.clear()
         page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
         m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
         consent_word = "Consentimiento para mensajes: Sí" if lang_line else "Text consent: Yes"
