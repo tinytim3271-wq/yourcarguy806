@@ -173,9 +173,14 @@ with sync_playwright() as pw:
             const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
             return el && el.id === 'f-sms-consent' ? '' : (el ? el.outerHTML.slice(0, 160) : 'nothing'); }""")
         check(not on_top, f"{path}: something covers the consent box: {on_top}")
+        page.evaluate("""() => { window.__consentLog = []; const box = document.getElementById('f-sms-consent');
+            ['pointerdown', 'mousedown', 'click', 'input', 'change'].forEach(type => box.addEventListener(type, e => window.__consentLog.push(type + ':' + box.checked + (e.defaultPrevented ? ':prevented' : ''))));
+            document.addEventListener('click', e => window.__consentLog.push('doc-click:' + (e.target.id || e.target.tagName)), true); }""")
         # A person taps the box or its wording; the label is the bigger target.
         page.click("label[for=f-sms-consent]", position={"x": 40, "y": 8})
-        check(page.is_checked("#f-sms-consent"), f"{path}: tapping the consent wording did not check the box")
+        if not page.is_checked("#f-sms-consent"):
+            info = page.evaluate("() => ({ log: window.__consentLog, url: location.href, checked: document.getElementById('f-sms-consent').checked, ua: navigator.userAgent })")
+            check(False, f"{path}: tapping the consent wording did not check the box: {info}")
         seen.clear()
         page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
         m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
