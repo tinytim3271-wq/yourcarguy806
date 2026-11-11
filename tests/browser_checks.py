@@ -161,6 +161,10 @@ with sync_playwright() as pw:
         # The optional consent box, on a freshly loaded form (the sms: link opened above can
         # still be settling in older Chromium): unchecked by default, never required, and
         # checking it adds the consent line.
+        # The site scrolls smoothly; with motion on, newer headless Chrome measures the box
+        # mid-scroll and taps where it used to be. Reduced motion (which the site honors)
+        # keeps the measured spot and the real spot the same.
+        page.emulate_media(reduced_motion="reduce")
         page.goto(BASE + path, wait_until="networkidle")
         page.fill("#f-name", "Test Customer"); page.fill("#f-phone", "(806) 555-0123")
         page.fill("#f-vehicle", "2016 Chevy Silverado"); page.fill("#f-location", "82nd & Slide")
