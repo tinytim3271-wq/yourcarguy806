@@ -151,7 +151,7 @@ with sync_playwright() as pw:
         check(page.eval_on_selector(".consent label", "e => getComputedStyle(e).fontWeight") == "400", f"{path}: consent text should not be bold")
         # SMS consent is required before anything is sent or copied
         page.click("button[type=submit]")
-        check("806) 686-0709" in page.inner_text(".error"), f"{path}: unchecked consent not blocked ({page.inner_text('.error')!r})")
+        check("806) 451-3520" in page.inner_text(".error"), f"{path}: unchecked consent not blocked ({page.inner_text('.error')!r})")
         check(not re.search(r"sms:\+", " ".join(seen)), f"{path}: text opened without consent")
         page.check("#f-consent")
         page.click("#copy-request")
