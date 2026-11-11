@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 
 DIST = os.path.join(os.path.dirname(__file__), "..", "dist")
 SITE = "https://www.yourcarguy806.com"
-CALL, TEXT = "+18066860709", "+18067764460"
+CALL, TEXT = "+18064513520", "+18067764460"
 fails = []
 
 
@@ -88,7 +88,7 @@ for url, p in pages.items():
     if p.canon != SITE + url: fails.append(f"{url}: canonical {p.canon}")
     og = SITE + ("/og-image-es.png" if is_es else "/og-image.png")
     if p.meta.get("og:image") != og: fails.append(f"{url}: og:image")
-    if "(806) 686-0709" not in raw[url] or "(806) 776-4460" not in raw[url]:
+    if "(806) 451-3520" not in raw[url] or "(806) 776-4460" not in raw[url]:
         fails.append(f"{url}: both phone numbers should appear")
     # hreflang
     if set(p.alts) != {"en-US", "es-US", "x-default"}: fails.append(f"{url}: hreflang set {set(p.alts)}")
