@@ -4,6 +4,7 @@
 English lives at /, Spanish at /es/. Content: content_en.py and content_es.py.
 Run:  python3 build.py   -> writes the deployable site to ./dist
 """
+import hashlib
 import html
 import json
 import os
@@ -29,6 +30,13 @@ TODAY = date.today().isoformat()
 LANGS = {"en": EN, "es": ES}
 
 esc = html.escape
+
+
+def asset(path):
+    """URL for a static file with a content version, so a changed script or
+    stylesheet is never served from a visitor's cache alongside new pages."""
+    with open(os.path.join(STATIC, path.lstrip("/")), "rb") as f:
+        return f"{path}?v={hashlib.sha256(f.read()).hexdigest()[:10]}"
 
 
 def call_link():
@@ -174,7 +182,7 @@ def page(lang, pid, title, desc, body, schemas=(), crumbs=None, robots="index,fo
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="{robots}">
 {head_seo}
-<script src="/js/lang.js"></script>
+<script src="{asset("/js/lang.js")}"></script>
 <meta name="theme-color" content="#15171b">
 <meta name="geo.region" content="US-TX">
 <meta name="geo.placename" content="Lubbock">
@@ -195,7 +203,7 @@ def page(lang, pid, title, desc, body, schemas=(), crumbs=None, robots="index,fo
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="{asset("/css/site.css")}">
 {ld}
 </head>
 <body>
@@ -204,7 +212,7 @@ def page(lang, pid, title, desc, body, schemas=(), crumbs=None, robots="index,fo
 {body}
 </main>
 {footer(lang, pid)}
-<script src="/js/site.js" defer></script>
+<script src="{asset("/js/site.js")}" defer></script>
 </body>
 </html>
 '''

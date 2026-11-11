@@ -123,6 +123,12 @@ for home in ("/", "/es/"):
 for c in ("/contact/", "/es/contacto/"):
     if pages[c].form_sms != TEXT: fails.append(f"{c}: form texts {pages[c].form_sms}, expected {TEXT}")
 
+# Scripts and styles carry a content version, so new pages never run with a cached old script.
+for c in ("/contact/", "/es/contacto/", "/"):
+    page_html = open(os.path.join(DIST, c.strip("/"), "index.html"), encoding="utf-8").read()
+    for asset_path in ("/js/site.js", "/js/lang.js", "/css/site.css"):
+        if not re.search(re.escape(asset_path) + r"\?v=[0-9a-f]{10}\"", page_html): fails.append(f"{c}: {asset_path} is not versioned")
+
 # Optional SMS consent: present, unchecked, never required, with every disclosure carriers check.
 CONSENT_NEEDS = {
     "/contact/": ["Optional:", "Reliable Automotive Services may text me", "Msg frequency varies", "Msg &amp; data rates may apply",

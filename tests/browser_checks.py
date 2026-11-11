@@ -161,6 +161,8 @@ with sync_playwright() as pw:
         # The optional consent box: unchecked by default, and checking it adds the consent line.
         check(not page.is_checked("#f-sms-consent"), f"{path}: consent box starts checked")
         check(page.get_attribute("#f-sms-consent", "required") is None, f"{path}: consent box must not be required")
+        # Center it first: on phones the fixed Call/Text bar covers the bottom of the screen.
+        page.evaluate("document.getElementById('f-sms-consent').scrollIntoView({block: 'center'})")
         page.check("#f-sms-consent"); seen.clear()
         page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
         m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
