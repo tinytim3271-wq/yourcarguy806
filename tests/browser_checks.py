@@ -177,6 +177,17 @@ with sync_playwright() as pw:
         page.screenshot(path=f"{SHOTS}/sms-{'es' if 'es/' in path else 'en'}-phone.png", full_page=True)
         ctx.close()
 
+    # ---- SMS opt-in evidence: every screenshot actually loads
+    for path in ("/sms-opt-in/", "/es/evidencia-sms/"):
+        ctx = browser.new_context(viewport={"width": 1280, "height": 900}); page = ctx.new_page()
+        page.goto(BASE + path, wait_until="networkidle")
+        page.evaluate("document.querySelectorAll('img[loading=lazy]').forEach(i => i.loading = 'eager')")
+        page.wait_for_function("[...document.images].every(i => i.complete)")
+        broken = page.evaluate("[...document.querySelectorAll('.evidence img')].filter(i => !i.naturalWidth).map(i => i.src)")
+        check(page.locator(".evidence img").count() == 4 and not broken, f"{path}: evidence screenshots missing/broken {broken}")
+        page.screenshot(path=f"{SHOTS}/evidence-{'es' if '/es/' in path else 'en'}.png", full_page=True)
+        ctx.close()
+
     # ---- 404s
     ctx = browser.new_context(); page = ctx.new_page()
     r = page.goto(BASE + "/no-such-page/"); check(r.status == 404 and "This Page Broke Down" in page.content(), "English 404")

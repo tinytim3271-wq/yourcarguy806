@@ -162,6 +162,18 @@ for asset in ("css/site.css", "js/site.js", "js/lang.js"):
         if found and found != ["?v=" + want] * len(found):
             fails.append(f"{url}: {asset} link not versioned with current hash ({found})")
 
+# ---- SMS opt-in evidence page: every step has its screenshot, and the SMS page links to it
+for url, lang in (("/sms-opt-in/", "en"), ("/es/evidencia-sms/", "es")):
+    if url not in pages:
+        fails.append(f"missing evidence page {url}"); continue
+    for key in ("home-text-cta", "sms-consent-box", "form-consent", "sms-phone"):
+        rel = f"sms-evidence/{key}-{lang}.webp"
+        if not os.path.isfile(os.path.join(DIST, rel)): fails.append(f"{url}: screenshot {rel} not built")
+        elif f'src="/{rel}?v=' not in raw[url]: fails.append(f"{url}: screenshot {rel} not shown")
+    if "(806) 776-4460" not in text_of(url): fails.append(f"{url}: text number missing")
+for sms_url, ev in (("/sms/", "/sms-opt-in/"), ("/es/mensajes-de-texto/", "/es/evidencia-sms/")):
+    if f'href="{ev}"' not in raw[sms_url]: fails.append(f"{sms_url}: does not link {ev}")
+
 ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 locs = {l.text for l in ET.parse(os.path.join(DIST, "sitemap.xml")).getroot().findall("s:url/s:loc", ns)}
 expected = {SITE + u for u in pages if not u.endswith("404.html")}

@@ -438,11 +438,44 @@ def sms_page(lang):
 <div class="consent-box" id="consent"><h2>{D["consent_h"]}</h2><p>{esc(D["consent"])}</p>
 <p><a class="btn btn-red" href="{SMS}">{ICONS["text"]}{D["cta_btn"]}</a></p></div>
 <h2>{D["cta_h"]}</h2><p>{esc(D["cta_p"])}</p>
-{secs}</div>
+{secs}<p><a href="{U["paths"]["sms_evidence"]}">{LANGS[lang].SMS_EVIDENCE["eyebrow"]} &rarr;</a></p></div>
 {aside(lang, callbox(lang))}</div></section>'''
     schema = {"@context": "https://schema.org", "@type": "WebPage", "name": D["title"], "url": SITE + path,
               "inLanguage": U["lang"], "about": {"@id": SITE + "/#business"}}
     return page(lang, pid, D["title"], D["desc"], body, schemas=[schema], crumbs=crumbs)
+
+
+def evidence_image(lang, key):
+    """Screenshot captured by scripts/capture_sms_evidence.py; returns (src, width, height) or None."""
+    rel = f"sms-evidence/{key}-{lang}.webp"
+    path = os.path.join(STATIC, rel)
+    if not os.path.exists(path):
+        return None
+    from PIL import Image
+    with Image.open(path) as im:
+        w, h = im.size
+    return "/" + rel + "?v=" + asset_version(rel), w, h
+
+
+def sms_evidence_page(lang):
+    C = LANGS[lang]; U = C.UI; D = C.SMS_EVIDENCE
+    pid = ("sms_evidence",); path = path_for(lang, pid)
+    crumbs = [(U["crumb_home"], U["paths"]["home"]), (U["sms_link"], U["paths"]["sms"]), (D["eyebrow"], path)]
+    steps = []
+    for title, key, text, alt in D["steps"]:
+        img = evidence_image(lang, key)
+        fig = (f'<figure class="evidence"><img src="{img[0]}" width="{img[1]}" height="{img[2]}" alt="{esc(alt)}" loading="lazy">'
+               f'<figcaption>{esc(alt)}</figcaption></figure>') if img else ""
+        steps.append(f'<h2>{esc(title)}</h2><p>{fill(text)}</p>{fig}')
+    body = f'''<section class="hero page-hero"><div class="wrap">{crumb_html(lang, crumbs)}<p class="eyebrow">{D["eyebrow"]}</p><h1>{esc(D["h1"])}</h1><p class="lead">{esc(D["lead"])}</p>
+<div class="btn-row"><a class="btn btn-amber" href="{SMS}">{ICONS["text"]}{C.SMS_PAGE["cta_btn"]}</a></div></div></section><div class="stripe" role="none"></div>
+<section><div class="wrap two-col"><div class="prose">
+<h2>{D["summary_h"]}</h2>{fill(D["summary"])}
+<div class="consent-box"><h2>{D["disclosure_h"]}</h2><p>{esc(C.SMS_PAGE["consent"])}</p><p class="small">{U["sms_short"]}</p></div>
+{"".join(steps)}
+<h2>{D["links_h"]}</h2>{D["links"]}
+</div>{aside(lang, callbox(lang))}</div></section>'''
+    return page(lang, pid, D["title"], D["desc"], body, crumbs=crumbs)
 
 
 def not_found(lang):
@@ -519,7 +552,8 @@ def all_pages():
         C = LANGS[lang]
         out += [(lang, ("home",), home(lang)), (lang, ("services",), services_index(lang)), (lang, ("area",), area_index(lang)),
                 (lang, ("about",), about(lang)), (lang, ("contact",), contact(lang)),
-                (lang, ("terms",), legal_page(lang, "terms", C.TERMS)), (lang, ("privacy",), legal_page(lang, "privacy", C.PRIVACY)), (lang, ("sms",), sms_page(lang))]
+                (lang, ("terms",), legal_page(lang, "terms", C.TERMS)), (lang, ("privacy",), legal_page(lang, "privacy", C.PRIVACY)), (lang, ("sms",), sms_page(lang)),
+                (lang, ("sms_evidence",), sms_evidence_page(lang))]
         out += [(lang, ("service", s["key"]), service_page(lang, s)) for s in C.SERVICES]
         out += [(lang, ("area_page", a["key"]), area_page(lang, a)) for a in C.AREAS]
     return out
@@ -598,6 +632,9 @@ def main():
 /sms-consent /sms/ 200
 /text /sms/ 200
 /text-us /sms/ 200
+/sms-consent-evidence /sms-opt-in/ 200
+/sms-consent-evidence/ /sms-opt-in/ 200
+/opt-in /sms-opt-in/ 200
 /espanol /es/ 301
 /spanish /es/ 301
 /es/services /es/servicios/ 301
