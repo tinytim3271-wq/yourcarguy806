@@ -71,6 +71,9 @@
       var lines = [d.intro || "Service request"];
       names.forEach(function (n, i) { var v = val(n); if (v) lines.push(labels[i] + ": " + v); });
       if (d.langLine) lines.push(d.langLine);
+      // Optional text-message consent: only added when the visitor checked the box.
+      var consent = form.elements.smsConsent;
+      if (consent && consent.checked && d.consentLine) lines.push(d.consentLine);
       return lines.join("\n");
     };
     var validate = function () {

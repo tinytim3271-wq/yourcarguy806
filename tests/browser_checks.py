@@ -157,6 +157,15 @@ with sync_playwright() as pw:
             check(m.group(1) == TEXT, f"{path}: form texts {m.group(1)}, expected {TEXT}")
             body = urllib.parse.unquote(m.group(2))
             check("2016 Chevy Silverado" in body and "Grinding when stopping & pulls left" in body, f"{path}: sms body {body!r}")
+            check("Text consent" not in body and "Consentimiento para mensajes" not in body, f"{path}: consent line sent without the box checked: {body!r}")
+        # The optional consent box: unchecked by default, and checking it adds the consent line.
+        check(not page.is_checked("#f-sms-consent"), f"{path}: consent box starts checked")
+        check(page.get_attribute("#f-sms-consent", "required") is None, f"{path}: consent box must not be required")
+        page.check("#f-sms-consent"); seen.clear()
+        page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
+        m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
+        consent_word = "Consentimiento para mensajes: Sí" if lang_line else "Text consent: Yes"
+        check(bool(m) and consent_word in urllib.parse.unquote(m.group(2)), f"{path}: checked box did not add the consent line")
         ctx.close()
 
     # ---- 404s

@@ -387,6 +387,7 @@ def contact(lang):
 <div class="row"><div><label for="f-location">{K["location"]} *</label><input id="f-location" type="text" name="location" required placeholder="{K["location_ph"]}"></div>
 <div><label for="f-when">{K["when"]}</label><input id="f-when" type="text" name="when" placeholder="{K["when_ph"]}"></div></div>
 <div><label for="f-details">{K["details"]}</label><textarea id="f-details" name="details" rows="5" placeholder="{K["details_ph"]}"></textarea></div>
+<div class="consent"><input id="f-sms-consent" type="checkbox" name="smsConsent" value="yes"><label for="f-sms-consent">{K["sms_consent"].replace("{terms}", U["paths"]["terms"]).replace("{privacy}", U["paths"]["privacy"])}</label></div>
 <p class="error" role="alert" aria-live="polite"></p>
 <div class="actions"><button class="btn btn-red" type="submit">{ICONS["text"]}{K["submit"]}</button><button id="copy-request" class="btn btn-dark" type="button">{K["copy"]}</button></div>
 </form>

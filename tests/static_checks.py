@@ -1,5 +1,6 @@
 """Static smoke tests: links, phone targets, SEO tags, hreflang, structured data, sitemap."""
-import json, os, sys
+import json
+import re, os, sys
 from html.parser import HTMLParser
 from xml.etree import ElementTree as ET
 
@@ -121,6 +122,32 @@ for home in ("/", "/es/"):
 
 for c in ("/contact/", "/es/contacto/"):
     if pages[c].form_sms != TEXT: fails.append(f"{c}: form texts {pages[c].form_sms}, expected {TEXT}")
+
+# Optional SMS consent: present, unchecked, never required, with every disclosure carriers check.
+CONSENT_NEEDS = {
+    "/contact/": ["Optional:", "Reliable Automotive Services may text me", "Msg frequency varies", "Msg &amp; data rates may apply",
+                  "Reply STOP to opt out, HELP for help", "Consent is not a condition of service", 'href="/terms/"', 'href="/privacy/"'],
+    "/es/contacto/": ["Opcional:", "Reliable Automotive Services puede mandarme mensajes", "La frecuencia de los mensajes varía",
+                      "Pueden aplicar cargos por mensajes y datos", "Responda STOP para cancelar, HELP para ayuda",
+                      "no es condición para recibir el servicio", 'href="/es/terminos/"', 'href="/es/privacidad/"'],
+}
+for c, needs in CONSENT_NEEDS.items():
+    html_text = open(os.path.join(DIST, c.strip("/"), "index.html"), encoding="utf-8").read()
+    box = re.search(r'<input id="f-sms-consent"[^>]*>', html_text)
+    if not box: fails.append(f"{c}: SMS consent checkbox missing"); continue
+    tag = box.group(0)
+    if 'type="checkbox"' not in tag: fails.append(f"{c}: consent box is not a checkbox")
+    if re.search(r"\b(checked|required)\b", tag): fails.append(f"{c}: consent box must be unchecked and optional: {tag}")
+    label = re.search(r'<label for="f-sms-consent">(.*?)</label>', html_text, re.S)
+    for need in needs:
+        if not label or need not in label.group(1): fails.append(f"{c}: consent text missing {need!r}")
+for legal, needs in {"/terms/": ["Message frequency varies", "<strong>HELP</strong>", "<strong>STOP</strong>", "Carriers are not liable for delayed or undelivered messages", 'href="/privacy/"'],
+                     "/privacy/": ["We do not sell or share your SMS opt-in data or personal information with third parties for marketing purposes"],
+                     "/es/terminos/": ["La frecuencia de los mensajes varía", "<strong>HELP</strong>", "<strong>STOP</strong>", "no son responsables de mensajes retrasados", 'href="/es/privacidad/"'],
+                     "/es/privacidad/": ["No vendemos ni compartimos sus datos de consentimiento para mensajes de texto"]}.items():
+    text = open(os.path.join(DIST, legal.strip("/"), "index.html"), encoding="utf-8").read()
+    for need in needs:
+        if need not in text: fails.append(f"{legal}: SMS disclosure missing {need!r}")
 
 ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 locs = {l.text for l in ET.parse(os.path.join(DIST, "sitemap.xml")).getroot().findall("s:url/s:loc", ns)}
