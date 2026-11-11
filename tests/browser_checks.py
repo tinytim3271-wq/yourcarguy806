@@ -169,8 +169,13 @@ with sync_playwright() as pw:
         # Center it first: on phones the fixed Call/Text bar covers the bottom of the screen.
         page.evaluate("document.getElementById('f-sms-consent').scrollIntoView({block: 'center', behavior: 'instant'})")
         page.wait_for_timeout(200)
-        page.check("#f-sms-consent")
-        check(page.is_checked("#f-sms-consent"), f"{path}: consent box did not check")
+        on_top = page.evaluate("""() => { const r = document.getElementById('f-sms-consent').getBoundingClientRect();
+            const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            return el && el.id === 'f-sms-consent' ? '' : (el ? el.outerHTML.slice(0, 160) : 'nothing'); }""")
+        check(not on_top, f"{path}: something covers the consent box: {on_top}")
+        # A person taps the box or its wording; the label is the bigger target.
+        page.click("label[for=f-sms-consent]", position={"x": 40, "y": 8})
+        check(page.is_checked("#f-sms-consent"), f"{path}: tapping the consent wording did not check the box")
         seen.clear()
         page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
         m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
