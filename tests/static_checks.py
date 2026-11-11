@@ -153,6 +153,15 @@ redirects = open(os.path.join(DIST, "_redirects")).read()
 for alias in ("/privacy-policy /privacy/ 200", "/terms-of-service /terms/ 200", "/sms-terms /sms/ 200"):
     if alias not in redirects: fails.append(f"_redirects missing alias {alias}")
 
+# ---- CSS/JS links carry a content hash so edge and browser caches never serve stale files
+import hashlib, re as _re2
+for asset in ("css/site.css", "js/site.js", "js/lang.js"):
+    want = hashlib.sha256(open(os.path.join(DIST, asset), "rb").read()).hexdigest()[:10]
+    for url in pages:
+        found = _re2.findall(r'/' + _re2.escape(asset) + r'(\?v=[0-9a-f]+)?"', raw[url])
+        if found and found != ["?v=" + want] * len(found):
+            fails.append(f"{url}: {asset} link not versioned with current hash ({found})")
+
 ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 locs = {l.text for l in ET.parse(os.path.join(DIST, "sitemap.xml")).getroot().findall("s:url/s:loc", ns)}
 expected = {SITE + u for u in pages if not u.endswith("404.html")}

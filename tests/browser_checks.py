@@ -145,6 +145,10 @@ with sync_playwright() as pw:
         page.fill("#f-phone", "(806) 555-0123"); page.fill("#f-vehicle", "2016 Chevy Silverado")
         page.select_option("#f-service", index=2); page.fill("#f-location", "82nd & Slide")
         page.fill("#f-details", "Grinding when stopping & pulls left")
+        # Consent box: checkbox sits beside its disclosure, which reads as normal text
+        cb = page.locator("#f-consent").bounding_box(); lb = page.locator(".consent label").bounding_box()
+        check(cb["width"] < 40 and cb["x"] < lb["x"] and abs(cb["y"] - lb["y"]) < 12, f"{path}: consent checkbox not beside its text")
+        check(page.eval_on_selector(".consent label", "e => getComputedStyle(e).fontWeight") == "400", f"{path}: consent text should not be bold")
         # SMS consent is required before anything is sent or copied
         page.click("button[type=submit]")
         check("806) 686-0709" in page.inner_text(".error"), f"{path}: unchecked consent not blocked ({page.inner_text('.error')!r})")

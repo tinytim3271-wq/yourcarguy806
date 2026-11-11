@@ -28,6 +28,18 @@ SMS = "sms:" + TEXT_E164
 TODAY = date.today().isoformat()
 LANGS = {"en": EN, "es": ES}
 
+
+def asset_version(rel):
+    """Short content hash so a changed CSS/JS file gets a new URL and is never served stale from cache."""
+    import hashlib
+    with open(os.path.join(STATIC, rel), "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()[:10]
+
+
+V_CSS = asset_version("css/site.css")
+V_SITE_JS = asset_version("js/site.js")
+V_LANG_JS = asset_version("js/lang.js")
+
 esc = html.escape
 
 
@@ -174,7 +186,7 @@ def page(lang, pid, title, desc, body, schemas=(), crumbs=None, robots="index,fo
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="{robots}">
 {head_seo}
-<script src="/js/lang.js"></script>
+<script src="/js/lang.js?v={V_LANG_JS}"></script>
 <meta name="theme-color" content="#15171b">
 <meta name="geo.region" content="US-TX">
 <meta name="geo.placename" content="Lubbock">
@@ -195,7 +207,7 @@ def page(lang, pid, title, desc, body, schemas=(), crumbs=None, robots="index,fo
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/site.css?v={V_CSS}">
 {ld}
 </head>
 <body>
@@ -204,7 +216,7 @@ def page(lang, pid, title, desc, body, schemas=(), crumbs=None, robots="index,fo
 {body}
 </main>
 {footer(lang, pid)}
-<script src="/js/site.js" defer></script>
+<script src="/js/site.js?v={V_SITE_JS}" defer></script>
 </body>
 </html>
 '''
