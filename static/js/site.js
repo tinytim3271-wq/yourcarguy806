@@ -79,6 +79,8 @@
       if (val("phone").replace(/\D/g, "").length < 10) missing.push(d.mPhone);
       if (!val("vehicle")) missing.push(d.mVehicle);
       if (!val("location")) missing.push(d.mLocation);
+      var consent = form.elements["consent"];
+      if (!missing.length && consent && !consent.checked) { err.textContent = d.mConsent || "Please agree to receive text messages."; return false; }
       if (missing.length) { err.textContent = (d.missing || "Please add {list}.").replace("{list}", missing.join(", ")); return false; }
       err.textContent = "";
       return true;

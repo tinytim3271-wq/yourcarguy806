@@ -145,6 +145,11 @@ with sync_playwright() as pw:
         page.fill("#f-phone", "(806) 555-0123"); page.fill("#f-vehicle", "2016 Chevy Silverado")
         page.select_option("#f-service", index=2); page.fill("#f-location", "82nd & Slide")
         page.fill("#f-details", "Grinding when stopping & pulls left")
+        # SMS consent is required before anything is sent or copied
+        page.click("button[type=submit]")
+        check("806) 686-0709" in page.inner_text(".error"), f"{path}: unchecked consent not blocked ({page.inner_text('.error')!r})")
+        check(not re.search(r"sms:\+", " ".join(seen)), f"{path}: text opened without consent")
+        page.check("#f-consent")
         page.click("#copy-request")
         clip = page.evaluate("navigator.clipboard.readText()")
         check(label_name + "Test Customer" in clip and "82nd & Slide" in clip, f"{path}: copied text wrong {clip!r}")
@@ -157,6 +162,15 @@ with sync_playwright() as pw:
             check(m.group(1) == TEXT, f"{path}: form texts {m.group(1)}, expected {TEXT}")
             body = urllib.parse.unquote(m.group(2))
             check("2016 Chevy Silverado" in body and "Grinding when stopping & pulls left" in body, f"{path}: sms body {body!r}")
+        ctx.close()
+
+    # ---- SMS consent page: text CTA and disclosure visible on a phone
+    for path, needle in [("/sms/", "Reply STOP"), ("/es/mensajes-de-texto/", "Responda STOP")]:
+        ctx = browser.new_context(viewport={"width": 390, "height": 844}); page = ctx.new_page()
+        page.goto(BASE + path, wait_until="networkidle")
+        check(page.is_visible(f".consent-box >> text={needle}"), f"{path}: consent box not visible")
+        check(page.get_attribute(".hero .btn-amber", "href") == "sms:+18067764460", f"{path}: hero text button wrong")
+        page.screenshot(path=f"{SHOTS}/sms-{'es' if 'es/' in path else 'en'}-phone.png", full_page=True)
         ctx.close()
 
     # ---- 404s

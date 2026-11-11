@@ -130,7 +130,7 @@ def footer(lang, pid):
     en_path = path_for("en", pid) if pid else "/"
     es_path = path_for("es", pid) if pid else "/es/"
     opts = "".join(f'<option value="{k}"{" selected" if k == lang else ""}>{LANGS[k].UI["name"]}</option>' for k in ("en", "es"))
-    return f'''<section class="cta-band"><div class="wrap"><div><h2>{U["cta_h"]}</h2><p>{U["cta_p"]}</p></div>
+    return f'''<section class="cta-band"><div class="wrap"><div><h2>{U["cta_h"]}</h2><p>{U["cta_p"]}</p>{sms_note(lang)}</div>
 <div class="btn-row" style="margin:0"><a class="btn btn-dark" href="{TEL}">{ICONS["phone"]}{CALL_DISPLAY}</a><a class="btn btn-amber" href="{SMS}">{ICONS["text"]}{U["text"]} {TEXT_DISPLAY}</a></div></div></section>
 <footer class="site-footer"><div class="wrap"><div class="grid">
 <div><a class="brand" href="{P["home"]}">{LOGO}<span class="brand-text"><span class="brand-name">Reliable Automotive</span><span class="brand-sub">Your Car Guy &middot; 806</span></span></a>
@@ -140,9 +140,9 @@ def footer(lang, pid):
 <select id="lang-select" data-en="{en_path}" data-es="{es_path}">{opts}</select></div></div>
 <div><h2>{U["f_services"]}</h2><ul>{svc}<li><a href="{P["services"]}">{U["all_services"]}</a></li></ul></div>
 <div><h2>{U["f_area"]}</h2><ul>{areas}<li><a href="{P["area"]}">{U["all_areas"]}</a></li></ul></div>
-<div><h2>{U["f_company"]}</h2><ul><li><a href="{P["about"]}">{U["about"]}</a></li><li><a href="{P["contact"]}">{U["contact_req"]}</a></li><li><a href="{TEL}">{U["call"]} {CALL_DISPLAY}</a></li><li><a href="{SMS}">{U["text_us"]}</a></li><li><a href="{P["terms"]}">{U["terms"]}</a></li><li><a href="{P["privacy"]}">{U["privacy"]}</a></li></ul></div>
+<div><h2>{U["f_company"]}</h2><ul><li><a href="{P["about"]}">{U["about"]}</a></li><li><a href="{P["contact"]}">{U["contact_req"]}</a></li><li><a href="{TEL}">{U["call"]} {CALL_DISPLAY}</a></li><li><a href="{SMS}">{U["text_us"]}</a></li><li><a href="{P["sms"]}">{U["sms_link"]}</a></li><li><a href="{P["terms"]}">{U["terms"]}</a></li><li><a href="{P["privacy"]}">{U["privacy"]}</a></li></ul></div>
 </div>
-<div class="footer-bottom"><span>&copy; <span id="year">{date.today().year}</span> {NAME}. Lubbock, Texas.</span><span><a href="{P["terms"]}">{U["terms"]}</a> &middot; <a href="{P["privacy"]}">{U["privacy"]}</a></span></div>
+<div class="footer-bottom"><span>&copy; <span id="year">{date.today().year}</span> {NAME}. Lubbock, Texas.</span><span><a href="{P["terms"]}">{U["terms"]}</a> &middot; <a href="{P["privacy"]}">{U["privacy"]}</a> &middot; <a href="{P["sms"]}">{U["sms_link"]}</a></span></div>
 </div></footer>
 <nav class="mobile-cta" aria-label="{U["quick"]}"><a class="call" href="{TEL}">{ICONS["phone"]}{U["call"]}</a><a class="text" href="{SMS}">{ICONS["text"]}{U["text"]}</a></nav>'''
 
@@ -231,12 +231,17 @@ def faq_html(faqs):
         f'<details><summary>{esc(q)}</summary><div><p>{esc(a)}</p></div></details>' for q, a in faqs) + "</div>"
 
 
+def sms_note(lang):
+    U = LANGS[lang].UI
+    return f'<p class="sms-note">{U["sms_short"]} <a href="{U["paths"]["sms"]}">{U["sms_details"]}</a></p>'
+
+
 def callbox(lang):
     U = LANGS[lang].UI
     return f'''<div class="callbox"><h2>{U["quote_h"]}</h2><p>{U["quote_p"]}</p>
 <a class="big-phone" href="{TEL}">{CALL_DISPLAY}</a>
 <a class="btn btn-red" href="{TEL}">{ICONS["phone"]}{U["call_now"]}</a><a class="btn btn-amber" href="{SMS}">{ICONS["text"]}{U["send_text"]}</a>
-<p class="text-line">{U["texts_to"]} <a href="{SMS}">{TEXT_DISPLAY}</a></p></div>'''
+<p class="text-line">{U["texts_to"]} <a href="{SMS}">{TEXT_DISPLAY}</a></p>{sms_note(lang)}</div>'''
 
 
 def service_card(lang, s):
@@ -274,7 +279,7 @@ def home(lang):
 <a class="big-phone" href="{TEL}">{CALL_DISPLAY}</a>
 <ul class="checks">{checks}</ul>
 <a class="btn btn-amber" style="width:100%" href="{SMS}">{ICONS["text"]}{H["text_btn"]}</a>
-<p class="text-line">{U["texts_to"]} <a href="{SMS}">{TEXT_DISPLAY}</a></p></aside>
+<p class="text-line">{U["texts_to"]} <a href="{SMS}">{TEXT_DISPLAY}</a></p>{sms_note(lang)}</aside>
 </div></section><div class="stripe" role="none"></div>
 
 <section><div class="wrap"><div class="section-head"><p class="eyebrow">{H["svc_eyebrow"]}</p><h2>{H["svc_h"]}</h2>
@@ -387,6 +392,8 @@ def contact(lang):
 <div class="row"><div><label for="f-location">{K["location"]} *</label><input id="f-location" type="text" name="location" required placeholder="{K["location_ph"]}"></div>
 <div><label for="f-when">{K["when"]}</label><input id="f-when" type="text" name="when" placeholder="{K["when_ph"]}"></div></div>
 <div><label for="f-details">{K["details"]}</label><textarea id="f-details" name="details" rows="5" placeholder="{K["details_ph"]}"></textarea></div>
+<div class="consent"><input id="f-consent" type="checkbox" name="consent" value="yes" required>
+<label for="f-consent">{LANGS[lang].SMS_PAGE["consent"]} <a href="{U["paths"]["sms"]}">{U["sms_details"]}</a> &middot; <a href="{U["paths"]["privacy"]}">{U["privacy"]}</a> &middot; <a href="{U["paths"]["terms"]}">{U["terms"]}</a></label></div>
 <p class="error" role="alert" aria-live="polite"></p>
 <div class="actions"><button class="btn btn-red" type="submit">{ICONS["text"]}{K["submit"]}</button><button id="copy-request" class="btn btn-dark" type="button">{K["copy"]}</button></div>
 </form>
@@ -405,6 +412,25 @@ def legal_page(lang, kind, D):
 <section><div class="wrap two-col"><div class="prose">{secs}</div>
 {aside(lang, f'<div class="linkbox"><h2>{U["on_page"]}</h2><ul>{toc}</ul></div>' + callbox(lang))}</div></section>'''
     return page(lang, pid, D["title"], D["desc"], body, crumbs=crumbs)
+
+
+def sms_page(lang):
+    C = LANGS[lang]; U = C.UI; D = C.SMS_PAGE
+    pid = ("sms",); path = path_for(lang, pid)
+    crumbs = [(U["crumb_home"], U["paths"]["home"]), (D["eyebrow"], path)]
+    secs = "".join(f'<h2 id="s{i+1}">{esc(h)}</h2>{fill(b)}' for i, (h, b) in enumerate(D["sections"]))
+    body = f'''<section class="hero page-hero"><div class="wrap">{crumb_html(lang, crumbs)}<p class="eyebrow">{D["eyebrow"]}</p><h1>{esc(D["h1"]).replace(TEXT_DISPLAY, f'<span class="nowrap">{TEXT_DISPLAY}</span>')}</h1><p class="lead">{esc(D["lead"])}</p>
+<div class="btn-row"><a class="btn btn-amber" href="{SMS}">{ICONS["text"]}{D["cta_btn"]}</a><a class="btn btn-ghost" href="{U["paths"]["contact"]}#request-form">{D["form_btn"]}</a></div>
+<p class="sms-note hero-note">{U["sms_short"]}</p></div></section><div class="stripe" role="none"></div>
+<section><div class="wrap two-col"><div class="prose">
+<div class="consent-box" id="consent"><h2>{D["consent_h"]}</h2><p>{esc(D["consent"])}</p>
+<p><a class="btn btn-red" href="{SMS}">{ICONS["text"]}{D["cta_btn"]}</a></p></div>
+<h2>{D["cta_h"]}</h2><p>{esc(D["cta_p"])}</p>
+{secs}</div>
+{aside(lang, callbox(lang))}</div></section>'''
+    schema = {"@context": "https://schema.org", "@type": "WebPage", "name": D["title"], "url": SITE + path,
+              "inLanguage": U["lang"], "about": {"@id": SITE + "/#business"}}
+    return page(lang, pid, D["title"], D["desc"], body, schemas=[schema], crumbs=crumbs)
 
 
 def not_found(lang):
@@ -481,7 +507,7 @@ def all_pages():
         C = LANGS[lang]
         out += [(lang, ("home",), home(lang)), (lang, ("services",), services_index(lang)), (lang, ("area",), area_index(lang)),
                 (lang, ("about",), about(lang)), (lang, ("contact",), contact(lang)),
-                (lang, ("terms",), legal_page(lang, "terms", C.TERMS)), (lang, ("privacy",), legal_page(lang, "privacy", C.PRIVACY))]
+                (lang, ("terms",), legal_page(lang, "terms", C.TERMS)), (lang, ("privacy",), legal_page(lang, "privacy", C.PRIVACY)), (lang, ("sms",), sms_page(lang))]
         out += [(lang, ("service", s["key"]), service_page(lang, s)) for s in C.SERVICES]
         out += [(lang, ("area_page", a["key"]), area_page(lang, a)) for a in C.AREAS]
     return out
@@ -547,6 +573,19 @@ def main():
 /about.html /about/ 301
 /areas /service-area/ 301
 /service-areas /service-area/ 301
+/privacy-policy /privacy/ 200
+/privacy-policy/ /privacy/ 200
+/privacy.html /privacy/ 200
+/terms-of-service /terms/ 200
+/terms-of-service/ /terms/ 200
+/terms-and-conditions /terms/ 200
+/terms-and-conditions/ /terms/ 200
+/terms.html /terms/ 200
+/sms-terms /sms/ 200
+/sms-terms/ /sms/ 200
+/sms-consent /sms/ 200
+/text /sms/ 200
+/text-us /sms/ 200
 /espanol /es/ 301
 /spanish /es/ 301
 /es/services /es/servicios/ 301

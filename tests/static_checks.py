@@ -122,6 +122,37 @@ for home in ("/", "/es/"):
 for c in ("/contact/", "/es/contacto/"):
     if pages[c].form_sms != TEXT: fails.append(f"{c}: form texts {pages[c].form_sms}, expected {TEXT}")
 
+# ---- SMS registration (A2P / toll-free) evidence
+def text_of(url):
+    import re as _re
+    return _re.sub(r"\s+", " ", _re.sub(r"<[^>]+>", " ", raw[url]))
+for sms_url, contact_url, privacy_url, terms_url, words in [
+        ("/sms/", "/contact/", "/privacy/", "/terms/",
+         ["Message frequency varies", "data rates may apply", "Reply STOP", "HELP", "not a condition of purchase", "(806) 776-4460"]),
+        ("/es/mensajes-de-texto/", "/es/contacto/", "/es/privacidad/", "/es/terminos/",
+         ["frecuencia de los mensajes varía", "cargos por mensajes y datos", "STOP", "HELP", "no es condición de compra", "(806) 776-4460"])]:
+    for url in (sms_url, contact_url):
+        t = text_of(url)
+        for w in words:
+            if w not in t: fails.append(f"{url}: SMS disclosure missing {w!r}")
+    if 'id="f-consent" type="checkbox" name="consent" value="yes" required' not in raw[contact_url]:
+        fails.append(f"{contact_url}: required SMS consent checkbox missing")
+    if f'href="{sms_url}"' not in raw[privacy_url] or f'href="{sms_url}"' not in raw[terms_url]:
+        fails.append(f"{privacy_url}/{terms_url}: must link the SMS page")
+    tt = text_of(terms_url)
+    for w in ("STOP", "HELP", "(806) 776-4460"):
+        if w not in tt: fails.append(f"{terms_url}: SMS terms missing {w!r}")
+for url, phrase in [("/privacy/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
+                    ("/sms/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
+                    ("/es/privacidad/", "No se compartirá información móvil con terceros ni afiliados para fines de mercadotecnia o promoción.")]:
+    if phrase not in text_of(url): fails.append(f"{url}: carrier non-sharing clause missing")
+for url in pages:
+    if url.endswith("404.html"): continue
+    if 'class="sms-note"' not in raw[url]: fails.append(f"{url}: no SMS disclosure next to Text buttons")
+redirects = open(os.path.join(DIST, "_redirects")).read()
+for alias in ("/privacy-policy /privacy/ 200", "/terms-of-service /terms/ 200", "/sms-terms /sms/ 200"):
+    if alias not in redirects: fails.append(f"_redirects missing alias {alias}")
+
 ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 locs = {l.text for l in ET.parse(os.path.join(DIST, "sitemap.xml")).getroot().findall("s:url/s:loc", ns)}
 expected = {SITE + u for u in pages if not u.endswith("404.html")}
