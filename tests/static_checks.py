@@ -1,5 +1,6 @@
 """Static smoke tests: links, phone targets, SEO tags, hreflang, structured data, sitemap."""
-import json, os, sys
+import json
+import re, os, sys
 from html.parser import HTMLParser
 from xml.etree import ElementTree as ET
 
@@ -135,8 +136,19 @@ for sms_url, contact_url, privacy_url, terms_url, words in [
         t = text_of(url)
         for w in words:
             if w not in t: fails.append(f"{url}: SMS disclosure missing {w!r}")
-    if 'id="f-consent" type="checkbox" name="consent" value="yes" required' not in raw[contact_url]:
-        fails.append(f"{contact_url}: required SMS consent checkbox missing")
+    # The SMS consent box is optional: present, unchecked, never required.
+    box = re.search(r'<input id="f-consent"[^>]*>', raw[contact_url])
+    if not box: fails.append(f"{contact_url}: SMS consent checkbox missing")
+    elif 'type="checkbox"' not in box.group(0) or re.search(r"\b(checked|required)\b", box.group(0)):
+        fails.append(f"{contact_url}: SMS consent box must be an unchecked, optional checkbox: {box.group(0)}")
+    if not re.search(r'<label for="f-consent">(Optional|Opcional): ', raw[contact_url]):
+        fails.append(f"{contact_url}: consent wording must say it is optional")
+    # No page may treat sending a request (without the box) as consent to texts.
+    for page_url in (sms_url, terms_url, privacy_url, contact_url):
+        page_text = text_of(page_url)
+        for wrong in ("or by sending a service request", "or send a service request from our website", "or by submitting the service request form",
+                      "o al enviar una solicitud de servicio desde nuestro sitio web", "o envía una solicitud de servicio desde nuestro sitio web", "o al enviar el formulario de solicitud"):
+            if wrong in page_text: fails.append(f"{page_url}: says sending a request is consent: {wrong!r}")
     if f'href="{sms_url}"' not in raw[privacy_url] or f'href="{sms_url}"' not in raw[terms_url]:
         fails.append(f"{privacy_url}/{terms_url}: must link the SMS page")
     tt = text_of(terms_url)

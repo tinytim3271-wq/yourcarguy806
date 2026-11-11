@@ -149,10 +149,14 @@ with sync_playwright() as pw:
         cb = page.locator("#f-consent").bounding_box(); lb = page.locator(".consent label").bounding_box()
         check(cb["width"] < 40 and cb["x"] < lb["x"] and abs(cb["y"] - lb["y"]) < 12, f"{path}: consent checkbox not beside its text")
         check(page.eval_on_selector(".consent label", "e => getComputedStyle(e).fontWeight") == "400", f"{path}: consent text should not be bold")
-        # SMS consent is required before anything is sent or copied
-        page.click("button[type=submit]")
-        check("806) 451-3520" in page.inner_text(".error"), f"{path}: unchecked consent not blocked ({page.inner_text('.error')!r})")
-        check(not re.search(r"sms:\+", " ".join(seen)), f"{path}: text opened without consent")
+        # SMS consent is optional: unchecked by default, never blocks the request,
+        # and adds a consent line only when checked.
+        check(not page.is_checked("#f-consent"), f"{path}: consent box starts checked")
+        check(page.get_attribute("#f-consent", "required") is None, f"{path}: consent box must not be required")
+        page.click("#copy-request")
+        clip = page.evaluate("navigator.clipboard.readText()")
+        consent_word = "Consentimiento para mensajes: Sí" if lang_line else "Text consent: Yes"
+        check(label_name + "Test Customer" in clip and consent_word not in clip, f"{path}: unchecked box should copy without a consent line {clip!r}")
         page.check("#f-consent")
         page.click("#copy-request")
         clip = page.evaluate("navigator.clipboard.readText()")
@@ -166,6 +170,17 @@ with sync_playwright() as pw:
             check(m.group(1) == TEXT, f"{path}: form texts {m.group(1)}, expected {TEXT}")
             body = urllib.parse.unquote(m.group(2))
             check("2016 Chevy Silverado" in body and "Grinding when stopping & pulls left" in body, f"{path}: sms body {body!r}")
+            check(consent_word in body, f"{path}: checked box did not add the consent line {body!r}")
+        # Without the box, the request still opens a text (in a new tab: the sms: prompt
+        # left on the first tab swallows mouse input in newer headless Chrome).
+        page = ctx.new_page(); seen = []
+        page.on("request", lambda r: seen.append(r.url)); page.on("framenavigated", lambda f: seen.append(f.url))
+        page.goto(BASE + path, wait_until="networkidle")
+        page.fill("#f-name", "Test Customer"); page.fill("#f-phone", "(806) 555-0123")
+        page.fill("#f-vehicle", "2016 Chevy Silverado"); page.fill("#f-location", "82nd & Slide")
+        page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
+        m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
+        check(bool(m) and consent_word not in urllib.parse.unquote(m.group(2)), f"{path}: request without consent should still open a text, with no consent line")
         ctx.close()
 
     # ---- SMS consent page: text CTA and disclosure visible on a phone
