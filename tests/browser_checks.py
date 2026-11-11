@@ -167,7 +167,8 @@ with sync_playwright() as pw:
         check(not page.is_checked("#f-sms-consent"), f"{path}: consent box starts checked")
         check(page.get_attribute("#f-sms-consent", "required") is None, f"{path}: consent box must not be required")
         # Center it first: on phones the fixed Call/Text bar covers the bottom of the screen.
-        page.evaluate("document.getElementById('f-sms-consent').scrollIntoView({block: 'center'})")
+        page.evaluate("document.getElementById('f-sms-consent').scrollIntoView({block: 'center', behavior: 'instant'})")
+        page.wait_for_timeout(200)
         page.check("#f-sms-consent")
         check(page.is_checked("#f-sms-consent"), f"{path}: consent box did not check")
         seen.clear()
