@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 
 DIST = os.path.join(os.path.dirname(__file__), "..", "dist")
 SITE = "https://www.yourcarguy806.com"
-CALL, TEXT = "+18064513520", "+18067764460"
+CALL, TEXT = "+18064513520", "+18064513520"
 fails = []
 
 
@@ -88,7 +88,7 @@ for url, p in pages.items():
     if p.canon != SITE + url: fails.append(f"{url}: canonical {p.canon}")
     og = SITE + ("/og-image-es.png" if is_es else "/og-image.png")
     if p.meta.get("og:image") != og: fails.append(f"{url}: og:image")
-    if "(806) 451-3520" not in raw[url] or "(806) 776-4460" not in raw[url]:
+    if "(806) 451-3520" not in raw[url] or "(806) 451-3520" not in raw[url]:
         fails.append(f"{url}: both phone numbers should appear")
     # hreflang
     if set(p.alts) != {"en-US", "es-US", "x-default"}: fails.append(f"{url}: hreflang set {set(p.alts)}")
@@ -129,9 +129,9 @@ def text_of(url):
     return _re.sub(r"\s+", " ", _re.sub(r"<[^>]+>", " ", raw[url]))
 for sms_url, contact_url, privacy_url, terms_url, words in [
         ("/sms/", "/contact/", "/privacy/", "/terms/",
-         ["Message frequency varies", "data rates may apply", "Reply STOP", "HELP", "not a condition of purchase", "(806) 776-4460"]),
+         ["Message frequency varies", "data rates may apply", "Reply STOP", "HELP", "not a condition of purchase", "(806) 451-3520"]),
         ("/es/mensajes-de-texto/", "/es/contacto/", "/es/privacidad/", "/es/terminos/",
-         ["frecuencia de los mensajes varía", "cargos por mensajes y datos", "STOP", "HELP", "no es condición de compra", "(806) 776-4460"])]:
+         ["frecuencia de los mensajes varía", "cargos por mensajes y datos", "STOP", "HELP", "no es condición de compra", "(806) 451-3520"])]:
     for url in (sms_url, contact_url):
         t = text_of(url)
         for w in words:
@@ -152,7 +152,7 @@ for sms_url, contact_url, privacy_url, terms_url, words in [
     if f'href="{sms_url}"' not in raw[privacy_url] or f'href="{sms_url}"' not in raw[terms_url]:
         fails.append(f"{privacy_url}/{terms_url}: must link the SMS page")
     tt = text_of(terms_url)
-    for w in ("STOP", "HELP", "(806) 776-4460"):
+    for w in ("STOP", "HELP", "(806) 451-3520"):
         if w not in tt: fails.append(f"{terms_url}: SMS terms missing {w!r}")
 for url, phrase in [("/privacy/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
                     ("/sms/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
@@ -182,7 +182,7 @@ for url, lang in (("/sms-opt-in/", "en"), ("/es/evidencia-sms/", "es")):
         rel = f"sms-evidence/{key}-{lang}.webp"
         if not os.path.isfile(os.path.join(DIST, rel)): fails.append(f"{url}: screenshot {rel} not built")
         elif f'src="/{rel}?v=' not in raw[url]: fails.append(f"{url}: screenshot {rel} not shown")
-    if "(806) 776-4460" not in text_of(url): fails.append(f"{url}: text number missing")
+    if "(806) 451-3520" not in text_of(url): fails.append(f"{url}: text number missing")
 for sms_url, ev in (("/sms/", "/sms-opt-in/"), ("/es/mensajes-de-texto/", "/es/evidencia-sms/")):
     if f'href="{ev}"' not in raw[sms_url]: fails.append(f"{sms_url}: does not link {ev}")
 

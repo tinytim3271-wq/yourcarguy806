@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 
 DIST = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "dist"))
 SHOTS = os.environ.get("SHOTS", "/tmp/shots"); os.makedirs(SHOTS, exist_ok=True)
-TEXT = "+18067764460"
+TEXT = "+18064513520"
 
 HEADERS, cur = {}, None
 for line in open(os.path.join(DIST, "_headers")):
@@ -162,7 +162,7 @@ with sync_playwright() as pw:
         clip = page.evaluate("navigator.clipboard.readText()")
         check(label_name + "Test Customer" in clip and "82nd & Slide" in clip, f"{path}: copied text wrong {clip!r}")
         if lang_line: check(lang_line in clip, f"{path}: Spanish preference line missing")
-        check("776-4460" in page.inner_text(".error"), f"{path}: copy confirmation should name the text line")
+        check("451-3520" in page.inner_text(".error"), f"{path}: copy confirmation should name the text line")
         page.evaluate("document.getElementById('request-form').requestSubmit()"); page.wait_for_timeout(500)
         m = re.search(r"sms:(\+\d+)\?&body=(\S+)", " ".join(seen))
         if not m: fails.append(f"{path}: submit did not open an sms: link")
@@ -188,7 +188,7 @@ with sync_playwright() as pw:
         ctx = browser.new_context(viewport={"width": 390, "height": 844}); page = ctx.new_page()
         page.goto(BASE + path, wait_until="networkidle")
         check(page.is_visible(f".consent-box >> text={needle}"), f"{path}: consent box not visible")
-        check(page.get_attribute(".hero .btn-amber", "href") == "sms:+18067764460", f"{path}: hero text button wrong")
+        check(page.get_attribute(".hero .btn-amber", "href") == "sms:+18064513520", f"{path}: hero text button wrong")
         page.screenshot(path=f"{SHOTS}/sms-{'es' if 'es/' in path else 'en'}-phone.png", full_page=True)
         ctx.close()
 

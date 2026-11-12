@@ -1,6 +1,6 @@
 """Contenido en español. Cada servicio/área comparte `key` con content_en.py."""
 CALL = "(806) 451-3520"
-TEXT = "(806) 776-4460"
+TEXT = "(806) 451-3520"
 
 UI = {
     "lang": "es-US", "og_locale": "es_US", "name": "Español", "short": "ES",
@@ -27,7 +27,7 @@ UI = {
     "footer_tag": "Reparación de autos a domicilio &middot; Condado de Lubbock, TX",
     "quick": "Contacto rápido", "main_nav": "Principal", "crumb_label": "Ruta de navegación",
     "quote_h": "Pida una cotización", "quote_p": "Díganos el año, la marca, el modelo y qué está haciendo su vehículo.",
-    "texts_to": "Mensajes de texto al", "aside_label": "Pida una cotización",
+    "texts_to": "Llame o mande mensaje a este número. Es el mismo para los dos.", "call_or_text": "Llame o mande mensaje al", "aside_label": "Pida una cotización",
     "other_services": "Otros servicios", "nearby": "Áreas cercanas", "full_area": "Toda el área de servicio",
     "on_page": "En esta página", "legal": "Legal", "effective": "Vigente desde el",
     "mobile_service": "Servicio a domicilio",
@@ -314,7 +314,7 @@ ABOUT = {
 
 CONTACT = {
     "title": "Contacto y Solicitud de Servicio | Reliable Automotive Lubbock",
-    "desc": "Pida reparación de autos a domicilio en el condado de Lubbock. Llame al (806) 451-3520, mande mensaje al (806) 776-4460 o envíe su solicitud y le damos precio.",
+    "desc": "Pida reparación de autos a domicilio en el condado de Lubbock. Llame al (806) 451-3520, mande mensaje al (806) 451-3520 o envíe su solicitud y le damos precio.",
     "h1": "Pida servicio a domicilio", "eyebrow": "Contacto",
     "lead": "Llame, mande un mensaje o llene el formulario y le respondemos con un precio.",
     "form_h": "Solicitud de servicio",
@@ -338,7 +338,7 @@ FORM_JS = {
     "labels": "Nombre|Teléfono|Vehículo|Servicio|Ubicación|Mejor horario|Detalles",
     "missing": "Por favor agregue {list}.",
     "m_name": "su nombre", "m_phone": "un teléfono de 10 dígitos", "m_vehicle": "su vehículo", "m_location": "dónde está el vehículo",
-    "copied": "Copiado. Péguelo en un mensaje de texto al (806) 776-4460.", "copy_prompt": "Copie su solicitud:",
+    "copied": "Copiado. Péguelo en un mensaje de texto al (806) 451-3520.", "copy_prompt": "Copie su solicitud:",
     "lang_line": "Idioma preferido: Español",
     "consent_line": "Consentimiento para mensajes: Sí, pueden mandarme mensajes sobre esta solicitud y mi servicio (aceptado en yourcarguy806.com).",
 }
@@ -376,7 +376,7 @@ PRIVACY = {
     "sections": [
         ("Resumen", "<p>Esta Política de privacidad explica qué información recopila Reliable Automotive Services a través de yourcarguy806.com y cuando usted se comunica con nosotros o usa nuestros servicios, y cómo la usamos. Lo hacemos sencillo: solo recopilamos lo que necesitamos para reparar su vehículo y operar nuestro negocio, y no vendemos su información.</p>"),
         ("Información que usted nos da", "<p>Cuando llama, manda un mensaje o envía una solicitud de servicio, puede darnos su nombre, número de teléfono, la ubicación de su vehículo, datos del vehículo (año, marca, modelo, número VIN, millaje), una descripción del problema y fotos o videos. Cuando paga, recibimos la información de pago necesaria para procesarlo.</p>"),
-        ("Cómo funciona el formulario de solicitud", "<p>El formulario de solicitud de nuestra página de Contacto no envía su información a nuestro sitio web ni la guarda en un servidor. Cuando toca &ldquo;Enviar mi solicitud por mensaje&rdquo;, el formulario abre la aplicación de mensajes de su propio dispositivo con sus datos ya escritos y dirigidos a nuestra línea de mensajes, el (806) 776-4460. No se envía nada hasta que usted toque enviar. &ldquo;Copiar solicitud&rdquo; solo copia el texto al portapapeles de su dispositivo.</p>"),
+        ("Cómo funciona el formulario de solicitud", "<p>El formulario de solicitud de nuestra página de Contacto no envía su información a nuestro sitio web ni la guarda en un servidor. Cuando toca &ldquo;Enviar mi solicitud por mensaje&rdquo;, el formulario abre la aplicación de mensajes de su propio dispositivo con sus datos ya escritos y dirigidos a nuestra línea de mensajes, el (806) 451-3520. No se envía nada hasta que usted toque enviar. &ldquo;Copiar solicitud&rdquo; solo copia el texto al portapapeles de su dispositivo.</p>"),
         ("Preferencia de idioma", "<p>Si elige un idioma en nuestro sitio, su navegador recuerda esa elección en su dispositivo (almacenamiento local) para que el sitio se abra en el mismo idioma la próxima vez. Esa información no se nos envía y usted la puede cambiar en cualquier momento.</p>"),
         ("Información que se recopila automáticamente", "<p>Este sitio web no usa rastreadores de publicidad, cookies de análisis ni píxeles de mercadotecnia de terceros. Nuestro proveedor de hospedaje y seguridad, Cloudflare, procesa información técnica básica como direcciones IP, tipo de navegador y las páginas solicitadas para poder mostrar el sitio y protegerlo de abusos. Consulte la política de privacidad de Cloudflare para saber cómo maneja esos datos. Si en el futuro agregamos herramientas de análisis, primero actualizaremos esta política.</p>"),
         ("Cómo usamos la información", "<ul><li>Para responder a su solicitud y darle una cotización</li><li>Para programar, trasladarnos y dar servicio a su vehículo</li><li>Para enviar facturas, recibos y registros de servicio, y procesar pagos</li><li>Para dar seguimiento a trabajos terminados y preguntas de garantía</li><li>Para cumplir con obligaciones legales, fiscales y contables</li></ul>"),
@@ -393,16 +393,16 @@ PRIVACY = {
 
 SMS_PAGE = {
     "title": "Mándenos un Mensaje | SMS y Consentimiento | Reliable Automotive",
-    "desc": "Mande un mensaje de texto a Reliable Automotive Services al (806) 776-4460 para cotizaciones, citas y avisos de su reparación. Consentimiento, STOP y HELP.",
+    "desc": "Mande un mensaje de texto a Reliable Automotive Services al (806) 451-3520 para cotizaciones, citas y avisos de su reparación. Consentimiento, STOP y HELP.",
     "eyebrow": "Mensajes de texto (SMS)",
-    "h1": "Mándenos un mensaje al (806) 776-4460",
+    "h1": "Mándenos un mensaje al (806) 451-3520",
     "lead": "Pida una cotización, haga una cita y reciba avisos de su reparación por mensaje de texto.",
     "cta_h": "Empiece un mensaje",
     "cta_p": "Mándenos su nombre, el año, la marca y el modelo de su vehículo, dónde está y qué está haciendo. Las fotos y videos ayudan.",
-    "cta_btn": "Mensaje al (806) 776-4460",
+    "cta_btn": "Mensaje al (806) 451-3520",
     "form_btn": "Usar el formulario",
     "consent_h": "Consentimiento para recibir mensajes de texto",
-    "consent": "Al mandar un mensaje de texto a Reliable Automotive Services al (806) 776-4460, o al marcar la casilla opcional de mensajes de texto en nuestro formulario de solicitud, usted acepta recibir mensajes de texto de Reliable Automotive Services sobre su solicitud de servicio, cotizaciones y presupuestos, citas, estado de la reparación y recibos. La frecuencia de los mensajes varía. Pueden aplicar cargos por mensajes y datos. Responda STOP para cancelar en cualquier momento. Responda HELP para ayuda. El consentimiento no es condición de compra. Las compañías telefónicas no son responsables por mensajes retrasados o no entregados.",
+    "consent": "Al mandar un mensaje de texto a Reliable Automotive Services al (806) 451-3520, o al marcar la casilla opcional de mensajes de texto en nuestro formulario de solicitud, usted acepta recibir mensajes de texto de Reliable Automotive Services sobre su solicitud de servicio, cotizaciones y presupuestos, citas, estado de la reparación y recibos. La frecuencia de los mensajes varía. Pueden aplicar cargos por mensajes y datos. Responda STOP para cancelar en cualquier momento. Responda HELP para ayuda. El consentimiento no es condición de compra. Las compañías telefónicas no son responsables por mensajes retrasados o no entregados.",
     "sections": [
         ("Programa", "<p><strong>Mensajes de atención al cliente de Reliable Automotive Services.</strong> Mandamos mensajes de texto a clientes que se comunican con nosotros por reparación y mantenimiento de vehículos en el condado de Lubbock, Texas, y pueblos cercanos. Los mensajes son conversaciones sobre su propio servicio. No mandamos mensajes de publicidad ni promociones.</p>"),
         ("Cómo acepta recibir mensajes", "<p>Usted acepta al mandarnos primero un mensaje al {text_link}, o al marcar la casilla opcional (sin marcar de inicio) de mensajes de texto en el formulario de solicitud de nuestra <a href=\"/es/contacto/\">página de Contacto</a>. La casilla nunca es obligatoria: puede enviar una solicitud sin ella. El formulario abre un mensaje ya escrito hacia nosotros en su teléfono, y no se envía nada hasta que usted toque enviar. Nunca agregamos números de listas compradas o compartidas.</p>"),
@@ -416,7 +416,7 @@ SMS_PAGE = {
 
 SMS_EVIDENCE = {
     "title": "Evidencia de Consentimiento SMS | Reliable Automotive",
-    "desc": "Capturas de pantalla de dónde Reliable Automotive Services invita a los clientes a mandar mensajes al (806) 776-4460 y del aviso de consentimiento SMS.",
+    "desc": "Capturas de pantalla de dónde Reliable Automotive Services invita a los clientes a mandar mensajes al (806) 451-3520 y del aviso de consentimiento SMS.",
     "eyebrow": "Evidencia de consentimiento SMS",
     "h1": "Cómo aceptan los clientes recibir mensajes de texto",
     "lead": "Todos los lugares donde invitamos a los clientes a mandarnos un mensaje, y el aviso de consentimiento que ven antes de hacerlo. El cliente siempre manda el primer mensaje.",

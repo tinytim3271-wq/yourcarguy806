@@ -3,7 +3,7 @@
 A static website (no server, no database) built for Cloudflare Pages.
 
 - `content_en.py` / `content_es.py` — all English and Spanish wording (services, towns, FAQs, Terms, Privacy). Edit both when you change content; the build stops if they don't list the same services and towns.
-- `build.py` — generates every page in both languages (English at `/`, Spanish at `/es/`). Phone numbers are set at the top: calls go to (806) 451-3520, texts and the contact form go to (806) 776-4460.
+- `build.py` — generates every page in both languages (English at `/`, Spanish at `/es/`). Phone numbers are set at the top: calls go to (806) 451-3520, texts and the contact form go to (806) 451-3520.
 - `static/` — CSS, JavaScript, and self-hosted fonts.
 - `dist/` — the finished website. **This is the folder you upload to Cloudflare.**
 - `tests/` — smoke tests (`python3 tests/static_checks.py`, `python3 tests/browser_checks.py`).
@@ -44,6 +44,6 @@ To re-run a deploy: GitHub → Actions → "Build, test & deploy yourcarguy806.c
 ## Things to confirm or edit
 - The service list: delete anything you don't do on site, and add anything missing.
 - Business hours aren't listed anywhere yet. Add them once they're set (and to the Google Business Profile).
-- The contact form and every "Text" button open a pre-filled **text message** to (806) 776-4460. Calls go to (806) 451-3520.
+- The contact form and every "Text" button open a pre-filled **text message** to (806) 451-3520. Calls go to (806) 451-3520.
 - The Spanish site says the *website* is in Spanish. It doesn't promise Spanish over the phone. If you or a tech speak Spanish, say so in the "¿Hablan español?" FAQ in content_es.py.
 - Terms of Service and Privacy Policy (English and Spanish, with the English version controlling) are solid starting points, not legal advice. Have them reviewed if you want certainty, especially the warranty and liability sections.

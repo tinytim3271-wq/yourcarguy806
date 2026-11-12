@@ -1,6 +1,6 @@
 """English content. Each service/area has a stable `key` shared with content_es.py."""
 CALL = "(806) 451-3520"
-TEXT = "(806) 776-4460"
+TEXT = "(806) 451-3520"
 
 UI = {
     "lang": "en-US", "og_locale": "en_US", "name": "English", "short": "EN",
@@ -27,7 +27,7 @@ UI = {
     "footer_tag": "Mobile auto repair &middot; Lubbock County, TX",
     "quick": "Quick contact", "main_nav": "Main", "crumb_label": "Breadcrumb",
     "quote_h": "Get a quote", "quote_p": "Tell us the year, make, model, and what it's doing.",
-    "texts_to": "Texts go to", "aside_label": "Get a quote",
+    "texts_to": "Call or text this number. Same number for both.", "call_or_text": "Call or text", "aside_label": "Get a quote",
     "other_services": "Other services", "nearby": "Nearby areas", "full_area": "Full service area",
     "on_page": "On this page", "legal": "Legal", "effective": "Effective",
     "mobile_service": "Mobile service",
@@ -314,7 +314,7 @@ ABOUT = {
 
 CONTACT = {
     "title": "Contact & Request Service | Reliable Automotive Services Lubbock",
-    "desc": "Request mobile auto repair in Lubbock County. Call (806) 451-3520, text (806) 776-4460, or send a service request and we'll get back to you with a price.",
+    "desc": "Request mobile auto repair in Lubbock County. Call (806) 451-3520, text (806) 451-3520, or send a service request and we'll get back to you with a price.",
     "h1": "Request Mobile Service", "eyebrow": "Contact",
     "lead": "Call, text, or fill out the form and we'll get back to you with a price.",
     "form_h": "Service request",
@@ -339,7 +339,7 @@ FORM_JS = {
     "labels": "Name|Callback|Vehicle|Service|Location|Best time|Details",
     "missing": "Please add {list}.",
     "m_name": "your name", "m_phone": "a 10-digit callback number", "m_vehicle": "your vehicle", "m_location": "where the vehicle is",
-    "copied": "Copied. Paste it into a text to (806) 776-4460.", "copy_prompt": "Copy your request:",
+    "copied": "Copied. Paste it into a text to (806) 451-3520.", "copy_prompt": "Copy your request:",
     "lang_line": "",
     "consent_line": "Text consent: Yes, you may text me about this request and my service (agreed on yourcarguy806.com).",
 }
@@ -377,7 +377,7 @@ PRIVACY = {
     "sections": [
         ("Overview", "<p>This Privacy Policy explains what information Reliable Automotive Services collects through yourcarguy806.com and when you contact us or use our services, and how we use it. We keep it simple: we collect only what we need to fix your vehicle and run our business, and we don't sell your information.</p>"),
         ("Information you give us", "<p>When you call, text, or send a service request, you may give us your name, phone number, the location of your vehicle, vehicle details (year, make, model, VIN, mileage), a description of the problem, and photos or videos. When you pay, we receive the payment information needed to process it.</p>"),
-        ("How the service request form works", "<p>The request form on our Contact page does not send your information to our website or store it on a server. When you press &ldquo;Text My Request,&rdquo; the form opens the messaging app on your own device with your details pre-filled and addressed to our text line, (806) 776-4460. Nothing is sent until you hit send. &ldquo;Copy request&rdquo; copies the text to your device's clipboard only.</p>"),
+        ("How the service request form works", "<p>The request form on our Contact page does not send your information to our website or store it on a server. When you press &ldquo;Text My Request,&rdquo; the form opens the messaging app on your own device with your details pre-filled and addressed to our text line, (806) 451-3520. Nothing is sent until you hit send. &ldquo;Copy request&rdquo; copies the text to your device's clipboard only.</p>"),
         ("Language preference", "<p>If you choose a language on our site, your browser remembers that choice on your device (local storage) so the site opens in the same language next time. It is not sent to us, and you can change it any time.</p>"),
         ("Information collected automatically", "<p>This website does not use advertising trackers, analytics cookies, or third-party marketing pixels. Our hosting and security provider, Cloudflare, processes basic technical information such as IP addresses, browser type, and the pages requested in order to deliver the site and protect it from abuse. See Cloudflare's privacy policy for how it handles that data. If we add analytics in the future, we will update this policy first.</p>"),
         ("How we use information", "<ul><li>To respond to your request and give you a quote</li><li>To schedule, travel to, and perform service on your vehicle</li><li>To send invoices, receipts, and service records, and to process payments</li><li>To follow up on completed work and warranty questions</li><li>To meet legal, tax, and accounting obligations</li></ul>"),
@@ -394,16 +394,16 @@ PRIVACY = {
 
 SMS_PAGE = {
     "title": "Text Us | SMS Terms & Consent | Reliable Automotive Services",
-    "desc": "Text Reliable Automotive Services at (806) 776-4460 for quotes, scheduling, and repair updates. How our text messages work, consent, STOP and HELP.",
+    "desc": "Text Reliable Automotive Services at (806) 451-3520 for quotes, scheduling, and repair updates. How our text messages work, consent, STOP and HELP.",
     "eyebrow": "Text messaging (SMS)",
-    "h1": "Text Us at (806) 776-4460",
+    "h1": "Text Us at (806) 451-3520",
     "lead": "Get a quote, schedule service, and get repair updates by text message.",
     "cta_h": "Start a text",
     "cta_p": "Text us your name, your vehicle's year, make, and model, where it is, and what it's doing. Photos and videos help.",
-    "cta_btn": "Text (806) 776-4460",
+    "cta_btn": "Text (806) 451-3520",
     "form_btn": "Use the request form",
     "consent_h": "Consent to receive text messages",
-    "consent": "By texting Reliable Automotive Services at (806) 776-4460, or by checking the optional text-message box on our service request form, you agree to receive text messages from Reliable Automotive Services about your service request, quotes and estimates, appointments, repair status, and receipts. Message frequency varies. Message and data rates may apply. Reply STOP to opt out at any time. Reply HELP for help. Consent is not a condition of purchase. Carriers are not liable for delayed or undelivered messages.",
+    "consent": "By texting Reliable Automotive Services at (806) 451-3520, or by checking the optional text-message box on our service request form, you agree to receive text messages from Reliable Automotive Services about your service request, quotes and estimates, appointments, repair status, and receipts. Message frequency varies. Message and data rates may apply. Reply STOP to opt out at any time. Reply HELP for help. Consent is not a condition of purchase. Carriers are not liable for delayed or undelivered messages.",
     "sections": [
         ("Program", "<p><strong>Reliable Automotive Services customer care texts.</strong> We text customers who contact us about vehicle repair and maintenance in Lubbock County, Texas, and surrounding towns. Texts are conversational and about your own service. We do not send marketing or promotional texts.</p>"),
         ("How you opt in", "<p>You opt in by texting us first at {text_link}, or by checking the optional, unchecked text-message box on the service request form on our <a href=\"/contact/\">Contact page</a>. The box is never required: you can send a request without it. The form opens a pre-filled text to us on your phone, and nothing is sent until you hit send. We never add numbers to a text list from a purchased or shared list.</p>"),
@@ -417,7 +417,7 @@ SMS_PAGE = {
 
 SMS_EVIDENCE = {
     "title": "SMS Opt-In Evidence | Reliable Automotive Services",
-    "desc": "Screenshots of where Reliable Automotive Services invites customers to text (806) 776-4460 and the SMS consent disclosure they see before texting.",
+    "desc": "Screenshots of where Reliable Automotive Services invites customers to text (806) 451-3520 and the SMS consent disclosure they see before texting.",
     "eyebrow": "SMS opt-in evidence",
     "h1": "How Customers Opt In to Text Messages",
     "lead": "Every place we invite customers to text us, and the consent disclosure they see before they text. Customers always send the first message.",

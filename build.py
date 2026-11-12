@@ -22,7 +22,8 @@ SITE = "https://www.yourcarguy806.com"
 NAME = "Reliable Automotive Services"
 SHORT = "Your Car Guy 806"
 CALL_DISPLAY, CALL_E164 = "(806) 451-3520", "+18064513520"
-TEXT_DISPLAY, TEXT_E164 = "(806) 776-4460", "+18067764460"
+# Calls and texts use the same Twilio number.
+TEXT_DISPLAY, TEXT_E164 = CALL_DISPLAY, CALL_E164
 TEL = "tel:" + CALL_E164
 SMS = "sms:" + TEXT_E164
 TODAY = date.today().isoformat()
@@ -124,7 +125,7 @@ def header(lang, pid):
     alt = path_for(o, pid) if pid else OU["paths"]["home"]
     return f'''<a class="skip" href="#main">{U["skip"]}</a>
 <div class="topbar"><div class="wrap"><span class="hide-sm">{U["topbar_left"]}</span>
-<span class="topbar-phones"><a href="{TEL}">{ICONS["phone"]}<span class="hide-sm">{U["call"]}&nbsp;</span>{CALL_DISPLAY}</a><span class="sep" aria-hidden="true">&middot;</span><a href="{SMS}">{ICONS["text"]}<span class="hide-sm">{U["text"]}&nbsp;</span>{TEXT_DISPLAY}</a></span></div></div>
+<span class="topbar-phones"><a href="{TEL}">{ICONS["phone"]}<span class="hide-sm">{U["call_or_text"]}&nbsp;</span>{CALL_DISPLAY}</a><span class="sep" aria-hidden="true">&middot;</span><a href="{SMS}" aria-label="{U["text"]} {TEXT_DISPLAY}">{ICONS["text"]}{U["text"]}</a></span></div></div>
 <header class="site-header"><div class="wrap">
 <a class="brand" href="{P["home"]}" aria-label="{NAME} {U["home_label"]}">{LOGO}<span class="brand-text"><span class="brand-name">Reliable Automotive</span><span class="brand-sub">Your Car Guy &middot; 806</span></span></a>
 <div class="header-tools">
@@ -147,7 +148,7 @@ def footer(lang, pid):
 <footer class="site-footer"><div class="wrap"><div class="grid">
 <div><a class="brand" href="{P["home"]}">{LOGO}<span class="brand-text"><span class="brand-name">Reliable Automotive</span><span class="brand-sub">Your Car Guy &middot; 806</span></span></a>
 <p>{U["footer_about"]}</p>
-<p>{U["call"]}: <a href="{TEL}"><strong>{CALL_DISPLAY}</strong></a><br>{U["text"]}: <a href="{SMS}"><strong>{TEXT_DISPLAY}</strong></a></p>
+<p>{U["call_or_text"]}: <a href="{TEL}"><strong>{CALL_DISPLAY}</strong></a> (<a href="{SMS}">{U["text"].lower()}</a>)</p>
 <div class="lang-setting"><label for="lang-select">{ICONS["globe"]}{U["lang_setting"]}</label>
 <select id="lang-select" data-en="{en_path}" data-es="{es_path}">{opts}</select></div></div>
 <div><h2>{U["f_services"]}</h2><ul>{svc}<li><a href="{P["services"]}">{U["all_services"]}</a></li></ul></div>
@@ -253,7 +254,7 @@ def callbox(lang):
     return f'''<div class="callbox"><h2>{U["quote_h"]}</h2><p>{U["quote_p"]}</p>
 <a class="big-phone" href="{TEL}">{CALL_DISPLAY}</a>
 <a class="btn btn-red" href="{TEL}">{ICONS["phone"]}{U["call_now"]}</a><a class="btn btn-amber" href="{SMS}">{ICONS["text"]}{U["send_text"]}</a>
-<p class="text-line">{U["texts_to"]} <a href="{SMS}">{TEXT_DISPLAY}</a></p>{sms_note(lang)}</div>'''
+<p class="text-line">{U["texts_to"]}</p>{sms_note(lang)}</div>'''
 
 
 def service_card(lang, s):
@@ -291,7 +292,7 @@ def home(lang):
 <a class="big-phone" href="{TEL}">{CALL_DISPLAY}</a>
 <ul class="checks">{checks}</ul>
 <a class="btn btn-amber" style="width:100%" href="{SMS}">{ICONS["text"]}{H["text_btn"]}</a>
-<p class="text-line">{U["texts_to"]} <a href="{SMS}">{TEXT_DISPLAY}</a></p>{sms_note(lang)}</aside>
+<p class="text-line">{U["texts_to"]}</p>{sms_note(lang)}</aside>
 </div></section><div class="stripe" role="none"></div>
 
 <section><div class="wrap"><div class="section-head"><p class="eyebrow">{H["svc_eyebrow"]}</p><h2>{H["svc_h"]}</h2>
@@ -539,8 +540,8 @@ def make_images():
         d.text((360, 120), "RELIABLE AUTOMOTIVE", font=display(78), fill="#f4ecdc")
         d.text((360, 212), "SERVICES", font=display(78), fill="#f4ecdc")
         d.text((364, 318), tag, font=font(28), fill="#f2a516")
-        d.text((360, 372), f"{call_lbl} {CALL_DISPLAY}", font=display(64), fill="#ffffff")
-        d.text((360, 452), f"{text_lbl} {TEXT_DISPLAY}", font=display(48), fill="#f2a516")
+        d.text((364, 372), call_lbl + (" / " + text_lbl if TEXT_E164 == CALL_E164 else ""), font=font(30), fill="#f2a516")
+        d.text((360, 412), CALL_DISPLAY, font=display(86), fill="#ffffff")
         d.text((364, 530), "yourcarguy806.com", font=font(26), fill="#cfc6b4")
         og.save(os.path.join(DIST, fname), optimize=True)
 
