@@ -154,6 +154,25 @@ for sms_url, contact_url, privacy_url, terms_url, words in [
     tt = text_of(terms_url)
     for w in ("STOP", "HELP", "(806) 451-3520"):
         if w not in tt: fails.append(f"{terms_url}: SMS terms missing {w!r}")
+# ---- Text scope must match the approved Twilio campaign (Low Volume Mixed: service texts,
+#      service-due reminders, review requests, occasional promotional offers)
+for url, words in [("/sms/", ["review requests", "occasional promotional offers", "service-due reminders"]),
+                   ("/contact/", ["review requests", "occasional promotional offers"]),
+                   ("/terms/", ["review requests", "occasional promotional offers"]),
+                   ("/es/mensajes-de-texto/", ["solicitudes de reseña", "ofertas promocionales ocasionales"]),
+                   ("/es/contacto/", ["solicitudes de reseña", "ofertas promocionales ocasionales"])]:
+    t = text_of(url)
+    for w in words:
+        if w not in t: fails.append(f"{url}: SMS scope must disclose {w!r} (matches the approved campaign)")
+for url in pages:
+    t = text_of(url)
+    for bad in ("We do not send marketing", "we do not send marketing", "No mandamos mensajes de publicidad", "no mandamos mensajes de publicidad"):
+        if bad in t: fails.append(f"{url}: says {bad!r}, contradicting the approved campaign")
+for url in pages:
+    if url.endswith("404.html"): continue
+    if 'class="sms-note"' in raw[url] and "occasional promotional offers" not in raw[url] and "ofertas promocionales ocasionales" not in raw[url]:
+        fails.append(f"{url}: short SMS disclosure does not mention promotional offers")
+
 for url, phrase in [("/privacy/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
                     ("/sms/", "No mobile information will be shared with third parties or affiliates for marketing or promotional purposes."),
                     ("/es/privacidad/", "No se compartirá información móvil con terceros ni afiliados para fines de mercadotecnia o promoción.")]:
