@@ -146,7 +146,10 @@ with sync_playwright() as pw:
         page.select_option("#f-service", index=2); page.fill("#f-location", "82nd & Slide")
         page.fill("#f-details", "Grinding when stopping & pulls left")
         # Consent box: checkbox sits beside its disclosure, which reads as normal text
-        cb = page.locator("#f-consent").bounding_box(); lb = page.locator(".consent label").bounding_box()
+        # Measure both in one snapshot: the page smooth-scrolls after typing, so two
+        # separate bounding_box() calls can land at different scroll positions.
+        cb, lb = page.eval_on_selector(".consent", """el => [el.querySelector('#f-consent'), el.querySelector('label')]
+            .map(n => { const r = n.getBoundingClientRect(); return {x: r.x, y: r.y, width: r.width}; })""")
         check(cb["width"] < 40 and cb["x"] < lb["x"] and abs(cb["y"] - lb["y"]) < 12, f"{path}: consent checkbox not beside its text")
         check(page.eval_on_selector(".consent label", "e => getComputedStyle(e).fontWeight") == "400", f"{path}: consent text should not be bold")
         # SMS consent is optional: unchecked by default, never blocks the request,
