@@ -7,6 +7,7 @@ Run:  python3 build.py   -> writes the deployable site to ./dist
 import html
 import json
 import os
+import re
 import shutil
 from datetime import date
 
@@ -68,6 +69,9 @@ def path_for(lang, pid):
     if kind == "area_page":
         a = next(x for x in C.AREAS if x["key"] == pid[1])
         return C.UI["paths"]["area"] + a["slug"] + "/"
+    if kind == "tip":
+        t = next(x for x in C.TIPS if x["key"] == pid[1])
+        return C.UI["paths"]["tips"] + t["slug"] + "/"
     return C.UI["paths"][kind]
 
 
@@ -153,7 +157,7 @@ def footer(lang, pid):
 <select id="lang-select" data-en="{en_path}" data-es="{es_path}">{opts}</select></div></div>
 <div><h2>{U["f_services"]}</h2><ul>{svc}<li><a href="{P["services"]}">{U["all_services"]}</a></li></ul></div>
 <div><h2>{U["f_area"]}</h2><ul>{areas}<li><a href="{P["area"]}">{U["all_areas"]}</a></li></ul></div>
-<div><h2>{U["f_company"]}</h2><ul><li><a href="{P["about"]}">{U["about"]}</a></li><li><a href="{P["contact"]}">{U["contact_req"]}</a></li><li><a href="{TEL}">{U["call"]} {CALL_DISPLAY}</a></li><li><a href="{SMS}">{U["text_us"]}</a></li><li><a href="{P["sms"]}">{U["sms_link"]}</a></li><li><a href="{P["terms"]}">{U["terms"]}</a></li><li><a href="{P["privacy"]}">{U["privacy"]}</a></li></ul></div>
+<div><h2>{U["f_company"]}</h2><ul><li><a href="{P["about"]}">{U["about"]}</a></li><li><a href="{P["tips"]}">{C.TIPS_PAGE["nav"]}</a></li><li><a href="{P["contact"]}">{U["contact_req"]}</a></li><li><a href="{TEL}">{U["call"]} {CALL_DISPLAY}</a></li><li><a href="{SMS}">{U["text_us"]}</a></li><li><a href="{P["sms"]}">{U["sms_link"]}</a></li><li><a href="{P["terms"]}">{U["terms"]}</a></li><li><a href="{P["privacy"]}">{U["privacy"]}</a></li></ul></div>
 </div>
 <div class="footer-bottom"><span>&copy; <span id="year">{date.today().year}</span> {NAME}. Lubbock, Texas.</span><span><a href="{P["terms"]}">{U["terms"]}</a> &middot; <a href="{P["privacy"]}">{U["privacy"]}</a> &middot; <a href="{P["sms"]}">{U["sms_link"]}</a></span></div>
 </div></footer>
@@ -309,6 +313,7 @@ def home(lang):
 <p style="margin-top:1em"><a href="{U["paths"]["area"]}">{H["see_area"]} &rarr;</a></p></div>
 {aside(lang, callbox(lang))}</div></section>
 
+{tips_band(lang)}
 <section><div class="wrap"><div class="section-head"><p class="eyebrow">{H["faq_eyebrow"]}</p><h2>{H["faq_h"]}</h2></div>{faq_html(C.HOME_FAQ)}</div></section>'''
     return page(lang, ("home",), H["title"], H["desc"], body, schemas=[faq_schema(C.HOME_FAQ)])
 
@@ -546,6 +551,55 @@ def make_images():
         og.save(os.path.join(DIST, fname), optimize=True)
 
 
+# ---------------------------------------------------------------- car tips
+def tip_body(lang, html):
+    """Fill phone placeholders and {svc:key} links to service pages."""
+    C = LANGS[lang]
+    def svc(m):
+        s = next(x for x in C.SERVICES if x["key"] == m.group(1))
+        return f'<a href="{path_for(lang, ("service", s["key"]))}">{esc(s["name"])}</a>'
+    return fill(re.sub(r"\{svc:([a-z0-9-]+)\}", svc, html))
+
+
+def tip_card(lang, t):
+    TP = LANGS[lang].TIPS_PAGE
+    return f'''<a class="card" href="{path_for(lang, ("tip", t["key"]))}"><span class="icon">{ICONS["text"]}</span><h3>{esc(t["h1"])}</h3><p>{esc(t["lead"][:150].rsplit(" ", 1)[0])}&hellip;</p><span class="more">{TP["read"]} &rarr;</span></a>'''
+
+
+def tips_band(lang):
+    C = LANGS[lang]; TP = C.TIPS_PAGE
+    cards = "".join(tip_card(lang, t) for t in C.TIPS[:3])
+    return f'''<section class="section-cream"><div class="wrap"><div class="section-head"><p class="eyebrow">{TP["home_eyebrow"]}</p><h2>{TP["home_h"]}</h2></div>
+<div class="grid grid-3">{cards}</div><p style="margin-top:1.5em"><a href="{C.UI["paths"]["tips"]}">{TP["home_all"]} &rarr;</a></p></div></section>'''
+
+
+def tips_index(lang):
+    C = LANGS[lang]; U = C.UI; TP = C.TIPS_PAGE
+    crumbs = [(U["crumb_home"], U["paths"]["home"]), (TP["eyebrow"], U["paths"]["tips"])]
+    cards = "".join(tip_card(lang, t) for t in C.TIPS)
+    items = [{"@type": "ListItem", "position": i + 1, "url": SITE + path_for(lang, ("tip", t["key"])), "name": t["h1"]} for i, t in enumerate(C.TIPS)]
+    schema = {"@context": "https://schema.org", "@type": "ItemList", "name": TP["h1"], "itemListElement": items}
+    body = page_hero(lang, crumbs, TP["h1"], TP["lead"], TP["eyebrow"]) + f'''
+<section><div class="wrap"><div class="grid grid-3">{cards}</div></div></section>'''
+    return page(lang, ("tips",), TP["title"], TP["desc"], body, schemas=[schema], crumbs=crumbs)
+
+
+def tip_page(lang, t):
+    C = LANGS[lang]; U = C.UI; TP = C.TIPS_PAGE
+    pid = ("tip", t["key"]); path = path_for(lang, pid)
+    crumbs = [(U["crumb_home"], U["paths"]["home"]), (TP["eyebrow"], U["paths"]["tips"]), (t["h1"], path)]
+    more = "".join(f'<li><a href="{path_for(lang, ("tip", o["key"]))}">{esc(o["h1"])}</a></li>' for o in C.TIPS if o["key"] != t["key"])
+    schema = {"@context": "https://schema.org", "@type": "Article", "headline": t["h1"], "description": t["desc"],
+              "datePublished": t["date"], "dateModified": t["date"], "inLanguage": U["lang"], "mainEntityOfPage": SITE + path,
+              "image": SITE + ("/og-image-es.png" if lang == "es" else "/og-image.png"),
+              "author": {"@id": SITE + "/#business"}, "publisher": {"@id": SITE + "/#business"}}
+    body = page_hero(lang, crumbs, t["h1"], t["lead"], TP["eyebrow"]) + f'''
+<section><div class="wrap two-col"><article class="prose"><p class="hint">{TP["updated"]}: <time datetime="{t["date"]}">{t["date"]}</time></p>
+{tip_body(lang, t["body"])}
+</article>{aside(lang, callbox(lang) + f'<div class="linkbox"><h2>{TP["more_h"]}</h2><ul>{more}<li><a href="{U["paths"]["tips"]}">{TP["home_all"]}</a></li></ul></div>')}</div></section>'''
+    return page(lang, pid, t["title"], t["desc"], body, schemas=[schema], crumbs=crumbs)
+
+
 def all_pages():
     """Yield (pid, {lang: html})."""
     out = []
@@ -557,6 +611,8 @@ def all_pages():
                 (lang, ("sms_evidence",), sms_evidence_page(lang))]
         out += [(lang, ("service", s["key"]), service_page(lang, s)) for s in C.SERVICES]
         out += [(lang, ("area_page", a["key"]), area_page(lang, a)) for a in C.AREAS]
+        out += [(lang, ("tips",), tips_index(lang))]
+        out += [(lang, ("tip", t["key"]), tip_page(lang, t)) for t in C.TIPS]
     return out
 
 
@@ -564,6 +620,7 @@ def main():
     # sanity: both languages define the same services/areas
     assert [s["key"] for s in EN.SERVICES] == [s["key"] for s in ES.SERVICES], "service keys differ"
     assert [a["key"] for a in EN.AREAS] == [a["key"] for a in ES.AREAS], "area keys differ"
+    assert [t["key"] for t in EN.TIPS] == [t["key"] for t in ES.TIPS], "tip keys differ"
     if os.path.isdir(DIST):
         shutil.rmtree(DIST)
     shutil.copytree(STATIC, DIST)
@@ -582,7 +639,7 @@ def main():
     for lang, pid, _ in pages:
         alt = "".join(f'<xhtml:link rel="alternate" hreflang="{LANGS[k].UI["lang"]}" href="{SITE}{path_for(k, pid)}"/>' for k in ("en", "es"))
         alt += f'<xhtml:link rel="alternate" hreflang="x-default" href="{SITE}{path_for("en", pid)}"/>'
-        prio = "1.0" if pid == ("home",) else ("0.8" if pid[0] in ("service", "area_page") else "0.7")
+        prio = "1.0" if pid == ("home",) else ("0.8" if pid[0] in ("service", "area_page") else ("0.6" if pid[0] in ("tip", "tips") else "0.7"))
         urls.append(f"<url><loc>{SITE}{path_for(lang, pid)}</loc><lastmod>{TODAY}</lastmod><priority>{prio}</priority>{alt}</url>")
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
           + "\n".join(urls) + "\n</urlset>\n")
@@ -595,7 +652,8 @@ def main():
     write("llms.txt", f"# {NAME}\n\n> Mobile mechanic (\"Your Car Guy 806\") serving Lubbock, Lubbock County, and surrounding West Texas towns. Call {CALL_DISPLAY}. Text {TEXT_DISPLAY}. Site available in English and Spanish ({SITE}/es/).\n\n## Services\n"
           + "".join(f"- [{s['name']}]({SITE}{path_for('en', ('service', s['key']))}): {s['short']}\n" for s in EN.SERVICES)
           + "\n## Service area\n" + "".join(f"- [{a['name']}, TX]({SITE}{path_for('en', ('area_page', a['key']))})\n" for a in EN.AREAS)
-          + "".join(f"- {t}, TX\n" for t in OTHER_TOWNS))
+          + "".join(f"- {t}, TX\n" for t in OTHER_TOWNS)
+          + "\n## Car tips\n" + "".join(f"- [{t['h1']}]({SITE}{path_for('en', ('tip', t['key']))})\n" for t in EN.TIPS))
     write("_headers", """/*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN

@@ -6,7 +6,7 @@ UI = {
     "lang": "en-US", "og_locale": "en_US", "name": "English", "short": "EN",
     "prefix": "",
     "paths": {"home": "/", "services": "/services/", "area": "/service-area/", "about": "/about/",
-              "contact": "/contact/", "terms": "/terms/", "privacy": "/privacy/", "sms": "/sms/", "sms_evidence": "/sms-opt-in/"},
+              "contact": "/contact/", "terms": "/terms/", "privacy": "/privacy/", "sms": "/sms/", "tips": "/car-tips/", "sms_evidence": "/sms-opt-in/"},
     "skip": "Skip to content",
     "topbar_left": "Mobile mechanic &middot; Lubbock County &amp; surrounding towns",
     "call": "Call", "text": "Text", "call_now": "Call Now", "send_text": "Send a Text",
@@ -441,3 +441,100 @@ SMS_EVIDENCE = {
     "links_h": "Policies",
     "links": "<ul><li>Privacy Policy: <a href=\"/privacy/\">www.yourcarguy806.com/privacy/</a></li><li>Terms of Service: <a href=\"/terms/\">www.yourcarguy806.com/terms/</a></li><li>Text Messaging (SMS) details: <a href=\"/sms/\">www.yourcarguy806.com/sms/</a></li></ul>",
 }
+
+# ---------------------------------------------------------------- Car tips (articles)
+# Body HTML may use {call_link}, {text_link} and {svc:<service key>} (links to that service page).
+TIPS_PAGE = {
+    "title": "Car Tips from a Lubbock Mobile Mechanic",
+    "desc": "Straight answers to common car problems in West Texas: no-starts, check engine lights, heater trouble, brake noises, and when a mobile mechanic makes sense.",
+    "eyebrow": "Car tips", "h1": "Car Tips from Your Car Guy",
+    "lead": "Plain-English answers to the problems we see every week around Lubbock. If yours sounds familiar, call or text and we'll come to you.",
+    "read": "Read the article", "nav": "Car Tips", "more_h": "More car tips", "updated": "Updated",
+    "home_eyebrow": "From the shop", "home_h": "Car Tips", "home_all": "All car tips",
+}
+
+TIPS = [
+    {"key": "cold-no-start", "slug": "car-wont-start-cold-morning", "date": "2026-11-19",
+     "title": "Car Won't Start When It's Cold? A Lubbock Guide",
+     "desc": "Clicking, a slow crank, or no sound at all on a cold morning? How to tell a weak battery from a bad starter or alternator, and what to do next.",
+     "h1": "Car Won't Start on a Cold Morning? Here's What It Usually Is",
+     "lead": "The first real cold snap in Lubbock always brings a wave of no-start calls. The sound your vehicle makes when you turn the key tells you most of the story.",
+     "body": """<h2>Slow, labored crank that finally catches</h2>
+<p>Cold weather cuts the power a battery can deliver while thick, cold oil makes the engine harder to turn. A battery that was fine in September can barely get the job done in November. If the engine turns over slowly and starts on the second or third try, the battery is the usual suspect, and it's a warning that a no-start is coming soon.</p>
+<h2>Rapid clicking and dim lights</h2>
+<p>A fast click-click-click with the dash lights dimming means there isn't enough power to spin the starter. Most of the time that's a discharged or failing battery, or a loose or corroded battery cable. A jump start often gets you going, but if the battery is weak it will leave you stuck again.</p>
+<h2>One loud click, then nothing</h2>
+<p>A single solid click with bright dash lights points more toward the starter, the starter relay, or a bad connection at the starter. Tapping on the starter may get it to work once, but that's a sign it's on its way out.</p>
+<h2>Starts with a jump, dies again later</h2>
+<p>If the vehicle runs after a jump but the battery is dead again the next morning, or the battery light comes on while you drive, the alternator may not be charging. Replacing the battery alone won't fix that, and the new battery will go down too.</p>
+<h2>Test before you buy parts</h2>
+<p>Batteries, starters and alternators are easy to throw money at. We test the battery, the charging system and the starter circuit first, so you only pay for the part that actually failed. See our {svc:battery-starter-alternator} service.</p>
+<h2>What to do right now</h2>
+<ul><li>Turn off lights, heater and accessories before trying again.</li><li>Don't crank for more than 10 to 15 seconds at a time; let the starter rest between tries.</li><li>If you jump it, connect the last clamp to bare metal on the engine, away from the battery.</li><li>If you smell gas, see smoke, or the battery is swollen or leaking, stop and call for help.</li></ul>
+<p>Stuck in a driveway or parking lot anywhere in Lubbock County? Call {call_link} or text {text_link} and we'll come test it where it sits.</p>"""},
+    {"key": "check-engine", "slug": "check-engine-light-steady-vs-flashing",
+     "date": "2026-11-19",
+     "title": "Check Engine Light: Steady vs. Flashing Explained",
+     "desc": "A steady check engine light and a flashing one mean very different things. What each means, why a free code read isn't a diagnosis, and when to stop driving.",
+     "h1": "Check Engine Light On? Steady and Flashing Mean Different Things",
+     "lead": "The check engine light covers hundreds of possible problems, from a loose gas cap to a misfire that can ruin an expensive part. Here's how to tell how urgent it is.",
+     "body": """<h2>Steady light: get it checked soon</h2>
+<p>A steady check engine light means the engine computer has stored a fault. The vehicle is usually safe to drive for a short time, but don't ignore it. Small problems like a vacuum leak or a failing sensor can hurt fuel mileage and lead to bigger repairs.</p>
+<h2>Flashing light: slow down and stop soon</h2>
+<p>A flashing check engine light usually means the engine is misfiring badly enough to send unburned fuel into the exhaust. That can overheat and destroy the catalytic converter, which is one of the most expensive parts on the vehicle. Ease off the gas, avoid hard acceleration, and get it looked at right away.</p>
+<h2>A code is a starting point, not an answer</h2>
+<p>Parts stores will read the code for free, and that's useful. But a code tells you which system noticed a problem, not why. An oxygen sensor code can be caused by a vacuum leak, an exhaust leak or a wiring problem, not just a bad sensor. Replacing the part named in the code is how people end up spending money and still having the light on.</p>
+<h2>How we diagnose it</h2>
+<p>We read the codes and freeze-frame data, look at live sensor data, check for the common causes of that code on your vehicle, and test the suspect parts before recommending anything. You get an explanation in plain English and a price before any repair. See {svc:check-engine-light-diagnostics}.</p>
+<h2>Things you can check yourself</h2>
+<ul><li>Make sure the gas cap is tight and the seal isn't cracked.</li><li>Notice whether the light came on after fueling, during cold starts, or while towing.</li><li>Write down any new noises, rough running or smells. It all helps narrow it down.</li></ul>
+<p>Light on now? Call {call_link} or text a photo of the dash to {text_link}.</p>"""},
+    {"key": "heater-cold", "slug": "heater-blowing-cold-air",
+     "date": "2026-11-19",
+     "title": "Heater Blowing Cold Air? 4 Common Causes",
+     "desc": "When your car's heater blows cold, it's usually low coolant, a thermostat, a clogged heater core or a blend door. How to narrow it down and why it matters.",
+     "h1": "Heater Blowing Cold Air? The 4 Usual Causes",
+     "lead": "Your heater uses hot engine coolant to warm the cabin. When the air stays cold, the problem is almost always in the cooling system or the controls that direct the air.",
+     "body": """<h2>1. Low coolant</h2>
+<p>If the coolant level is low, there may not be enough hot coolant reaching the heater core. Low coolant also means it's going somewhere: a leaking hose, water pump, radiator or gasket. That's worth finding before the engine overheats. Never open a hot radiator cap.</p>
+<h2>2. Thermostat stuck open</h2>
+<p>A thermostat that sticks open lets coolant circulate before the engine warms up. You'll often see the temperature gauge stay low on the highway, and the heater only gets lukewarm. It also hurts fuel mileage.</p>
+<h2>3. Clogged heater core</h2>
+<p>Old or mixed coolant can leave deposits that block the heater core. A common sign is that the engine is at normal temperature, but the heater stays cool, sometimes with one heater hose hot and the other one cool.</p>
+<h2>4. Blend door or controls</h2>
+<p>A small door behind the dash blends hot and cold air. If its motor fails, you may hear clicking behind the dash or get heat on only one side. The engine and coolant are fine; the air just isn't being routed through the heater.</p>
+<h2>Warning signs to take seriously</h2>
+<ul><li>The temperature gauge climbing toward hot.</li><li>A sweet smell inside the cab or fog on the inside of the windshield, which can mean a leaking heater core.</li><li>Puddles of green, orange or pink fluid under the vehicle.</li></ul>
+<p>We pressure-test the system and check the thermostat, heater core flow and blend doors to find the actual cause. See {svc:cooling-system-repair}. Call {call_link} or text {text_link}.</p>"""},
+    {"key": "brake-noises", "slug": "brake-noises-squeal-grind",
+     "date": "2026-11-19",
+     "title": "Brake Noises: Squeal, Grind or Pulsation?",
+     "desc": "What squealing, grinding and a pulsing pedal mean when you brake, which ones are urgent, and how waiting turns a pad job into pads and rotors.",
+     "h1": "Brake Noises Explained: Squeal, Grind and Pulsation",
+     "lead": "Brakes usually tell you they need attention well before they fail. The trick is knowing which noises can wait a week and which ones can't.",
+     "body": """<h2>High-pitched squeal when braking</h2>
+<p>Many brake pads have a small metal tab called a wear indicator. When the pads get thin, it rubs the rotor and squeals to get your attention. It's a reminder, not an emergency, but don't put it off for long. Squealing can also come from glazed pads or missing hardware.</p>
+<h2>Metal-on-metal grinding</h2>
+<p>Grinding usually means the pad material is gone and the steel backing plate is rubbing the rotor. Every stop now damages the rotor, stopping distance gets longer, and a simple pad replacement turns into pads and rotors. Get it checked right away.</p>
+<h2>Pulsing pedal or shaking steering wheel</h2>
+<p>A brake pedal that pulses or a steering wheel that shakes when you stop from highway speed usually points to uneven rotor surfaces or deposits on the rotors. It's not just annoying; it can make stops less smooth and predictable.</p>
+<h2>Other signs to watch for</h2>
+<ul><li>A soft or sinking pedal, which can mean air or a leak in the hydraulic system. Stop driving and call.</li><li>The vehicle pulling to one side when braking.</li><li>A burning smell after normal driving, which can mean a sticking caliper.</li><li>A brake warning light on the dash.</li></ul>
+<h2>We do most brake jobs in your driveway</h2>
+<p>Pads, rotors, calipers, hoses and fluid service can be done where your vehicle is parked. We inspect the whole system and give you a price before any work starts. See {svc:brake-repair}. Hearing something? Text a video to {text_link} or call {call_link}.</p>"""},
+    {"key": "mobile-vs-shop", "slug": "mobile-mechanic-vs-repair-shop",
+     "date": "2026-11-19",
+     "title": "Mobile Mechanic vs. Repair Shop in Lubbock",
+     "desc": "Which repairs a mobile mechanic can do in your driveway, which ones need a shop, and what to have ready so the job goes fast. A straight guide for Lubbock drivers.",
+     "h1": "Mobile Mechanic or Repair Shop? What Can Be Fixed in Your Driveway",
+     "lead": "A mobile mechanic saves you the tow, the ride and the waiting room. Here's an honest look at what can be done on site and when a shop makes more sense.",
+     "body": """<h2>Jobs that are a great fit for mobile service</h2>
+<ul><li>Diagnostics and check engine lights</li><li>Batteries, starters and alternators</li><li>Brake pads, rotors and calipers</li><li>Belts, hoses, thermostats and many cooling system parts</li><li>Spark plugs, coils and tune-ups</li><li>Many suspension and steering parts</li><li>Oil changes and routine maintenance</li><li>Pre-purchase inspections before you buy a used vehicle</li></ul>
+<h2>When a shop makes more sense</h2>
+<p>Some jobs need a lift, special equipment or a long, controlled setup: transmission rebuilds, major engine work, alignments, and some jobs that require pulling the engine or transmission. If your repair falls in that group, we'll tell you before any work starts instead of trying to force it in a driveway.</p>
+<h2>Why people choose mobile service</h2>
+<p>No tow bill, no arranging a ride, and no losing half a day in a waiting room. Your vehicle gets fixed at home or at work while you keep going, and you can watch the work and see the old parts.</p>
+<h2>What to have ready</h2>
+<ul><li>A safe, reasonably level spot to work, like a driveway or parking lot where work is allowed.</li><li>Access to the vehicle and keys.</li><li>The year, make, model and what it's doing. Photos or a short video of a warning light or noise help a lot.</li></ul>
+<p>We cover Lubbock and the rest of Lubbock County, plus surrounding towns. Call {call_link} or text {text_link} and we'll tell you if your job is a good fit for mobile service.</p>"""},
+]

@@ -6,7 +6,7 @@ UI = {
     "lang": "es-US", "og_locale": "es_US", "name": "Español", "short": "ES",
     "prefix": "/es",
     "paths": {"home": "/es/", "services": "/es/servicios/", "area": "/es/area-de-servicio/", "about": "/es/nosotros/",
-              "contact": "/es/contacto/", "terms": "/es/terminos/", "privacy": "/es/privacidad/", "sms": "/es/mensajes-de-texto/", "sms_evidence": "/es/evidencia-sms/"},
+              "contact": "/es/contacto/", "terms": "/es/terminos/", "privacy": "/es/privacidad/", "sms": "/es/mensajes-de-texto/", "tips": "/es/consejos/", "sms_evidence": "/es/evidencia-sms/"},
     "skip": "Saltar al contenido",
     "topbar_left": "Mecánico a domicilio &middot; Condado de Lubbock y alrededores",
     "call": "Llamar", "text": "Mensaje", "call_now": "Llamar ahora", "send_text": "Enviar mensaje",
@@ -63,7 +63,7 @@ HOME_FAQ = [
     ("¿Cómo pido una cotización?", f"Llame al {CALL} o mande un mensaje de texto al {TEXT} con el año, la marca, el modelo y lo que está haciendo el vehículo. Revisamos el trabajo y le damos un precio antes de empezar."),
     ("¿Tengo que estar en casa mientras trabajan?", "No siempre. Si podemos llegar al vehículo y a las llaves, y usted puede aprobar el trabajo por teléfono, muchos trabajos se hacen mientras usted está en el trabajo."),
     ("¿Qué necesitan de mi parte?", "Un lugar seguro y más o menos plano para trabajar, acceso al vehículo y a las llaves, y una buena descripción del problema. Fotos o un video corto del ruido o de la luz de advertencia ayudan mucho."),
-    ("¿Hablan español?", "Nuestro sitio web está disponible en español. Cuando nos llame o nos mande un mensaje, díganos que prefiere español."),
+    ("¿Hablan español?", f"Nuestro sitio web está disponible en español. La mejor forma de contactarnos en español es por mensaje de texto al {TEXT}: escríbanos en español y le respondemos por mensaje."),
 ]
 
 SERVICES_PAGE = {
@@ -440,3 +440,95 @@ SMS_EVIDENCE = {
     "links_h": "Políticas",
     "links": "<ul><li>Política de privacidad: <a href=\"/es/privacidad/\">www.yourcarguy806.com/es/privacidad/</a></li><li>Términos de servicio: <a href=\"/es/terminos/\">www.yourcarguy806.com/es/terminos/</a></li><li>Detalles de SMS: <a href=\"/es/mensajes-de-texto/\">www.yourcarguy806.com/es/mensajes-de-texto/</a></li></ul>",
 }
+
+# ---------------------------------------------------------------- Consejos (artículos)
+TIPS_PAGE = {
+    "title": "Consejos para tu carro de un mecánico en Lubbock",
+    "desc": "Respuestas claras a problemas comunes del carro en Lubbock: no arranca, luz check engine, calefacción, ruidos de frenos y cuándo conviene un mecánico a domicilio.",
+    "eyebrow": "Consejos", "h1": "Consejos para tu carro",
+    "lead": "Respuestas sencillas a los problemas que vemos cada semana en Lubbock. Si el tuyo se parece, mándanos un mensaje de texto y vamos a donde estés.",
+    "read": "Leer el artículo", "nav": "Consejos", "more_h": "Más consejos", "updated": "Actualizado",
+    "home_eyebrow": "Desde el taller", "home_h": "Consejos para tu carro", "home_all": "Todos los consejos",
+}
+
+TIPS = [
+    {"key": "cold-no-start", "slug": "carro-no-arranca-con-frio", "date": "2026-11-19",
+     "title": "¿El carro no arranca con el frío? Guía de Lubbock",
+     "desc": "¿Hace clic, arranca lento o no hace nada en una mañana fría? Cómo distinguir una batería débil de una marcha o un alternador malo, y qué hacer después.",
+     "h1": "¿Tu carro no arranca en una mañana fría? Esto suele ser",
+     "lead": "Con el primer frío fuerte en Lubbock llegan muchas llamadas de carros que no arrancan. El sonido que hace al girar la llave dice casi todo.",
+     "body": """<h2>Arranca lento y con trabajo</h2>
+<p>El frío reduce la fuerza de la batería y el aceite frío hace que el motor gire con más dificultad. Una batería que estaba bien en septiembre puede apenas alcanzar en noviembre. Si el motor gira lento y arranca al segundo o tercer intento, lo más probable es la batería, y es aviso de que pronto no va a arrancar.</p>
+<h2>Clic rápido y luces débiles</h2>
+<p>Un clic-clic-clic rápido con las luces del tablero bajando significa que no hay suficiente corriente para la marcha. Casi siempre es una batería descargada o dañada, o un cable de batería flojo o sulfatado. Pasar corriente suele funcionar, pero si la batería está débil te va a dejar tirado otra vez.</p>
+<h2>Un solo clic fuerte y nada más</h2>
+<p>Un solo clic con las luces del tablero brillantes apunta más a la marcha, al relé de la marcha o a una mala conexión. Golpear la marcha puede hacer que funcione una vez, pero es señal de que ya va a fallar.</p>
+<h2>Arranca con corriente y se vuelve a morir</h2>
+<p>Si el carro anda después de pasarle corriente pero amanece muerto otra vez, o se prende la luz de la batería mientras manejas, puede ser que el alternador no esté cargando. Cambiar solo la batería no lo arregla.</p>
+<h2>Probar antes de comprar piezas</h2>
+<p>Primero probamos la batería, el sistema de carga y el circuito de la marcha, para que solo pagues la pieza que de verdad falló. Mira nuestro servicio de {svc:battery-starter-alternator}.</p>
+<h2>Qué hacer ahorita</h2>
+<ul><li>Apaga luces, calefacción y accesorios antes de volver a intentar.</li><li>No le des marcha más de 10 a 15 segundos seguidos; deja descansar la marcha entre intentos.</li><li>Si pasas corriente, conecta la última pinza a metal del motor, lejos de la batería.</li><li>Si hueles gasolina, ves humo, o la batería está hinchada o goteando, detente y pide ayuda.</li></ul>
+<p>¿Atorado en cualquier parte del condado de Lubbock? Mándanos un mensaje de texto al {text_link} y vamos a probarlo donde está.</p>"""},
+    {"key": "check-engine", "slug": "luz-check-engine-fija-o-parpadeando", "date": "2026-11-19",
+     "title": "Luz check engine: fija o parpadeando",
+     "desc": "La luz check engine fija y la que parpadea significan cosas muy distintas. Qué quiere decir cada una, por qué leer el código no es un diagnóstico y cuándo parar.",
+     "h1": "¿Luz check engine prendida? Fija y parpadeando no son lo mismo",
+     "lead": "La luz check engine puede ser cientos de cosas, desde un tapón de gasolina flojo hasta una falla que arruina una pieza cara. Así puedes saber qué tan urgente es.",
+     "body": """<h2>Luz fija: revísalo pronto</h2>
+<p>Una luz check engine fija significa que la computadora del motor guardó una falla. Normalmente se puede manejar por poco tiempo, pero no la ignores. Problemas chicos como una fuga de vacío o un sensor malo pueden gastar más gasolina y terminar en reparaciones más grandes.</p>
+<h2>Luz parpadeando: baja la velocidad y detente pronto</h2>
+<p>Una luz que parpadea casi siempre significa que el motor está fallando tanto que manda gasolina sin quemar al escape. Eso puede sobrecalentar y destruir el convertidor catalítico, una de las piezas más caras del carro. No aceleres fuerte y haz que lo revisen de inmediato.</p>
+<h2>Un código es un punto de partida, no una respuesta</h2>
+<p>En las tiendas de refacciones leen el código gratis, y eso ayuda. Pero el código dice qué sistema notó el problema, no por qué. Un código de sensor de oxígeno puede venir de una fuga de vacío, una fuga de escape o un cable, no solo de un sensor malo.</p>
+<h2>Cómo lo diagnosticamos</h2>
+<p>Leemos los códigos y los datos del momento de la falla, revisamos los sensores en vivo y probamos las piezas sospechosas antes de recomendar algo. Te explicamos claro y te damos el precio antes de cualquier reparación. Mira {svc:check-engine-light-diagnostics}.</p>
+<h2>Lo que puedes revisar tú</h2>
+<ul><li>Que el tapón de gasolina esté bien apretado y el empaque no esté roto.</li><li>Si la luz se prendió después de cargar gasolina, al arrancar en frío o al jalar un remolque.</li><li>Cualquier ruido, olor o falla nueva. Todo ayuda.</li></ul>
+<p>¿Tienes la luz prendida? Mándanos una foto del tablero por mensaje de texto al {text_link}.</p>"""},
+    {"key": "heater-cold", "slug": "calefaccion-sopla-frio", "date": "2026-11-19",
+     "title": "¿La calefacción sopla frío? 4 causas comunes",
+     "desc": "Cuando la calefacción del carro sopla frío casi siempre es poco anticongelante, el termostato, el radiador de la calefacción o una compuerta. Cómo saber cuál es.",
+     "h1": "¿La calefacción de tu carro sopla frío? Las 4 causas de siempre",
+     "lead": "La calefacción usa el anticongelante caliente del motor para calentar la cabina. Si el aire sigue frío, el problema casi siempre está en el sistema de enfriamiento o en los controles del aire.",
+     "body": """<h2>1. Poco anticongelante</h2>
+<p>Si el nivel está bajo, puede que no llegue suficiente anticongelante caliente al radiador de la calefacción. Y si falta, se está saliendo por algún lado: una manguera, la bomba de agua, el radiador o un empaque. Conviene encontrarlo antes de que el motor se caliente. Nunca abras el tapón del radiador caliente.</p>
+<h2>2. Termostato pegado abierto</h2>
+<p>Un termostato pegado abierto deja circular el anticongelante antes de que el motor se caliente. El indicador de temperatura se queda bajo en carretera y la calefacción apenas sale tibia. También gasta más gasolina.</p>
+<h2>3. Radiador de la calefacción tapado</h2>
+<p>El anticongelante viejo o mezclado puede dejar sarro que tapa el radiador de la calefacción. Una señal común es que el motor está a temperatura normal pero la calefacción sigue fría.</p>
+<h2>4. Compuerta de mezcla o controles</h2>
+<p>Una compuerta detrás del tablero mezcla el aire caliente y el frío. Si su motorcito falla, puedes oír clics detrás del tablero o tener calor solo de un lado.</p>
+<h2>Señales que no hay que ignorar</h2>
+<ul><li>La aguja de temperatura subiendo hacia caliente.</li><li>Un olor dulce dentro del carro o el parabrisas empañado por dentro.</li><li>Charcos de líquido verde, naranja o rosa debajo del carro.</li></ul>
+<p>Probamos la presión del sistema y revisamos el termostato, el flujo de la calefacción y las compuertas para encontrar la causa real. Mira {svc:cooling-system-repair}. Mándanos un mensaje de texto al {text_link}.</p>"""},
+    {"key": "brake-noises", "slug": "ruidos-de-frenos", "date": "2026-11-19",
+     "title": "Ruidos de frenos: chillido, raspón o vibración",
+     "desc": "Qué significa un chillido, un raspón de metal o un pedal que vibra al frenar, cuáles son urgentes y cómo esperar convierte un cambio de balatas en balatas y discos.",
+     "h1": "Ruidos de frenos: chillido, raspón y vibración",
+     "lead": "Los frenos casi siempre avisan antes de fallar. Lo importante es saber qué ruidos pueden esperar una semana y cuáles no.",
+     "body": """<h2>Chillido agudo al frenar</h2>
+<p>Muchas balatas traen una pestaña de metal que avisa el desgaste. Cuando la balata ya está delgada, la pestaña roza el disco y chilla. Es un aviso, no una emergencia, pero no lo dejes mucho tiempo.</p>
+<h2>Raspón de metal contra metal</h2>
+<p>El raspón casi siempre significa que ya no queda material en la balata y la placa de acero está rozando el disco. Cada frenada daña el disco, tardas más en detenerte y un simple cambio de balatas se vuelve balatas y discos. Revísalo de inmediato.</p>
+<h2>Pedal que vibra o volante que tiembla</h2>
+<p>Si el pedal vibra o el volante tiembla al frenar desde velocidad de carretera, normalmente los discos están disparejos o tienen residuos. No es solo molesto; hace que el frenado sea menos parejo.</p>
+<h2>Otras señales</h2>
+<ul><li>Pedal suave o que se va hasta el fondo: puede ser aire o una fuga. Deja de manejar y llama.</li><li>El carro se jala hacia un lado al frenar.</li><li>Olor a quemado después de manejar normal, que puede ser un caliper pegado.</li><li>La luz de frenos prendida en el tablero.</li></ul>
+<h2>La mayoría de los trabajos de frenos los hacemos en tu cochera</h2>
+<p>Balatas, discos, calipers, mangueras y cambio de líquido se pueden hacer donde está tu carro. Revisamos todo el sistema y te damos el precio antes de empezar. Mira {svc:brake-repair}. ¿Oyes algo raro? Mándanos un video al {text_link}.</p>"""},
+    {"key": "mobile-vs-shop", "slug": "mecanico-a-domicilio-o-taller", "date": "2026-11-19",
+     "title": "¿Mecánico a domicilio o taller en Lubbock?",
+     "desc": "Qué reparaciones puede hacer un mecánico a domicilio en tu cochera, cuáles necesitan taller y qué tener listo para que el trabajo salga rápido en Lubbock.",
+     "h1": "¿Mecánico a domicilio o taller? Lo que se puede arreglar en tu cochera",
+     "lead": "Un mecánico a domicilio te ahorra la grúa, el aventón y la sala de espera. Aquí te decimos con honestidad qué se puede hacer donde está tu carro y cuándo conviene un taller.",
+     "body": """<h2>Trabajos ideales para servicio a domicilio</h2>
+<ul><li>Diagnóstico y luz check engine</li><li>Baterías, marchas y alternadores</li><li>Balatas, discos y calipers</li><li>Bandas, mangueras, termostatos y muchas piezas del sistema de enfriamiento</li><li>Bujías, bobinas y afinaciones</li><li>Muchas piezas de suspensión y dirección</li><li>Cambios de aceite y mantenimiento</li><li>Inspecciones antes de comprar un carro usado</li></ul>
+<h2>Cuándo conviene más un taller</h2>
+<p>Algunos trabajos necesitan elevador, equipo especial o mucho tiempo: reconstruir transmisiones, trabajos grandes de motor, alineaciones y trabajos donde hay que bajar el motor o la transmisión. Si tu reparación es de ese tipo, te lo decimos antes de empezar.</p>
+<h2>Por qué la gente prefiere el servicio a domicilio</h2>
+<p>Sin pagar grúa, sin buscar quién te lleve y sin perder medio día en una sala de espera. Tu carro se arregla en tu casa o en el trabajo mientras sigues con tu día, y puedes ver el trabajo y las piezas viejas.</p>
+<h2>Qué tener listo</h2>
+<ul><li>Un lugar seguro y más o menos plano para trabajar, como una cochera o un estacionamiento donde se permita.</li><li>Acceso al carro y a las llaves.</li><li>Año, marca, modelo y qué está haciendo. Fotos o un video corto ayudan mucho.</li></ul>
+<p>Cubrimos Lubbock, todo el condado y pueblos cercanos. Mándanos un mensaje de texto al {text_link} y te decimos si tu trabajo se puede hacer a domicilio.</p>"""},
+]
